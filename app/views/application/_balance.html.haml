@@ -1,0 +1,24 @@
+:ruby
+  active_balance_link ||= false
+  balance_container_extra_classes ||= ''
+  balance_container_id ||= nil
+  data ||= nil
+  label ||= 'Balance'
+  label_glyph_classes ||= nil
+  hide_connect_button ||= false
+  user_wallet_balance ||= false
+
+= render 'polkadot_connect_button_small' unless hide_connect_button
+= tag.div(class: "balance-container #{balance_container_extra_classes} d-none #{user_wallet_balance ? 'user-balance-container' : ''}", data:, id: balance_container_id) do
+  - if label_glyph_classes
+    %em{ class: label_glyph_classes }
+  - if label.present?
+    #{label}:
+  // This could be the button loading part...
+  = render 'loading', tag_name: :span do
+    - if active_balance_link
+      %a.balance{ href: '#' }
+    - else
+      %span.balance
+    %span.balance-as-usd
+  = render 'button_loading', button_classes: 'btn btn-light-primary border btn-sm ms-2 mb-1 d-none balance-view-button', ready_label: 'View', data: data if user_wallet_balance
