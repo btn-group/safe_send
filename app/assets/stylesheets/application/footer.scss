@@ -1,0 +1,30 @@
+footer {
+  .logo {
+    height: 30px;
+    line-height: 30px;
+  }
+}
+
+[data-bs-theme=dark] {
+  footer {
+    .logo-light {
+      display: inline-block;
+    }
+
+    .logo-dark {
+      display: none;
+    }
+  }
+}
+
+[data-bs-theme=light] {
+  footer {
+    .logo-light {
+      display: none;
+    }
+
+    .logo-dark {
+      display: inline-block;
+    }
+  }
+}

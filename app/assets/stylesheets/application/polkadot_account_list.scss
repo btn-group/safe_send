@@ -1,0 +1,30 @@
+#polkadot-account-list {
+  .logo-container {
+    height: 40px;
+    width: 40px;
+  }
+
+  .cell-wrapper-wrapper {
+    height: 19px;
+    line-height: 19px;
+    position: relative;
+
+    .cell {
+      bottom: 0;
+      box-sizing: border-box;
+      display: block;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 100%;
+
+      .cell-overflow {
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+}

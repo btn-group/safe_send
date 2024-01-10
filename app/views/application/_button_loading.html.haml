@@ -1,0 +1,9 @@
+:ruby
+  button_type ||= 'button'
+  data ||= nil
+  ready_label ||= nil
+  icon_only ||= false
+  button_id ||= nil
+
+= render 'loading', tag_type: button_type, data:, ready_label:, icon_only:, tag_classes: button_classes, tag_id: button_id do
+  = ready_label || yield

@@ -1,0 +1,27 @@
+!!!
+%html{ 'data-bs-theme' => 'light', 'data-layout' => 'horizontal', 'data-preloader' => 'enable', 'data-sidebar' => 'light', 'data-sidebar-image' => 'none', 'data-sidebar-size' => 'lg', 'data-topbar' => 'dark', lang: 'en' }
+  %head
+    %title Safe Send
+    %meta{ charset: 'utf-8' }
+    = favicon_link_tag 'favicon.png'
+    %meta{ name: 'description', content: 'Safely send crypto via an allowance/collect mechanism.' }
+    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
+    %meta{ property: 'og:image', content: 'favicon.png' }
+    %meta{ property: 'og:site_name', content: 'Safe Send' }
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    // === CUSTOM ===
+    = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbo-track': 'reload'
+  %body{ class: "rails-env-#{Rails.env}" }
+    #layout-wrapper
+      = render 'header'
+      .main-content
+        .page-content
+          %p.notice= notice
+          %p.alert= alert
+          = yield
+      = render 'footer'
+    = render 'preloader'
+    = render 'polkadot_account_list'
