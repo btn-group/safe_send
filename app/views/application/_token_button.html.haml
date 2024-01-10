@@ -1,0 +1,6 @@
+- additional_button_classes ||= ''
+
+%button.btn.dropdown-toggle.align-items-center.d-flex{ class: additional_button_classes, 'data-bs-target' => data_target, 'data-bs-toggle' => 'modal', type: 'button', id: button_id, 'data-initial-id': token.id }
+  .me-3.over-flow-hidden.symbol.symbol-25px.symbol-circle
+    = cl_image_tag(token.attachments.first&.cloudinary_public_id || 'external-content.duckduckgo-1_memqe7', transformation: [{ fetch_format: :auto, quality: 100, crop: :scale, dpr: 2, height: 25, width: 25 }])
+  %span.token-symbol.me-2= token.symbol
