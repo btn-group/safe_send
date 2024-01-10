@@ -1,0 +1,36 @@
+%header#page-topbar
+  .layout-width
+    .navbar-header
+      .d-flex
+        .horizontal-logo
+          = link_to root_path, class: 'logo logo-dark' do
+            %span.logo-sm
+              .fs-5.text-white Safe Send
+            %span.logo-lg
+              .fs-2.text-white Safe Send
+          = link_to root_path, class: 'logo logo-light' do
+            %span.logo-sm
+              .fs-5.text-white Safe Send
+            %span.logo-lg
+              .fs-2.text-white Safe Send
+      .d-flex.align-items-center
+        .header-item
+          %button.btn.btn-icon.btn-topbar.btn-ghost-secondary.rounded-circle.light-dark-mode{ type: 'button' }
+            %i.bx.bx-moon.fs-22
+        .dropdown.ms-sm-3.header-item.topbar-user
+          %button.btn.d-none#page-header-user-dropdown{ 'aria-expanded' => 'false', 'aria-haspopup' => 'true', 'data-bs-toggle' => 'dropdown', type: 'button', 'data-bs-auto-close': 'outside' }
+            %span.d-flex.align-items-center
+              %img.user-address-alias-avatar{ alt: 'Wallet logo', src: 'https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Clipart.png', height: 40 }
+              .text-start.ms-3
+                .fw-medium.user-name-text.account-name
+                .fs-12.user-name-sub-text.account-address-abbreviated
+          .dropdown-menu.dropdown-menu-end
+            %h6.dropdown-header
+              .d-flex.flex-column.position-relative
+                .d-flex.align-items-center
+                  .wallet-address.me-2#polkadot-user-account-menu-wallet-address
+                  %button.btn.btn-icon.btn-sm
+                    %i.bi.bi-clipboard.text-muted.fs-4{ 'data-clipboard-target' => '#polkadot-user-account-menu-wallet-address' }
+            .dropdown-divider
+            = link_to 'Change', '#', id: 'change-account-link', class: 'dropdown-item'
+        = render 'polkadot_connect_button'

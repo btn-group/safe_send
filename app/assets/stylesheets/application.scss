@@ -1,0 +1,42 @@
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import '../../../lib/assets/css/bootstrap.min';
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
+
+// === VELZON ===
+@import '../../../lib/assets/css/icons.min';
+@import '../../../lib/assets/css/app.min';
+
+// === CUSTOM ===
+@import 'application/footer';
+@import 'application/polkadot_account_list';
+
+.required::after {
+  color: var(--bs-red);
+  content: ' *';
+}
+
+// === DROPZONE ===
+.dropzone {
+  border-style: dashed;
+  padding: 12px;
+
+  .dz-message {
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .dz-preview {
+    margin: 0;
+    max-width: 100%;
+
+    .dz-image {
+      max-width: 100%;
+    }
+  }
+
+  .dz-progress {
+    // We need autoQueue set to false which breaks progress bar
+    display: none;
+  }
+}

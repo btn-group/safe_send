@@ -1,0 +1,16 @@
+:ruby
+  tag_type ||= nil
+  data ||= nil
+  ready_label ||= nil
+  icon_only ||= false
+  tag_classes ||= nil
+  tag_id ||= nil
+  tag_name ||= :button
+
+= content_tag tag_name, type: tag_type, class: tag_classes, data:, id: tag_id do
+  %span.d-none.loading
+    %em.spinner-grow.spinner-grow-sm{ 'aria-hidden' => 'true', role: 'status' }
+    - unless icon_only
+      %em.loading-status Loading...
+  %span.ready
+    = ready_label || yield
