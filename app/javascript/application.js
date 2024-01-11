@@ -1,5 +1,6 @@
 import "@hotwired/turbo-rails";
 import "./src/jquery";
+import "bootstrap";
 
 // === VELZON ===
 import "../../lib/assets/js/layout";

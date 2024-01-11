@@ -25,3 +25,35 @@
       = render 'footer'
     = render 'preloader'
     = render 'polkadot_account_list'
+    .modal.fade#about-modal{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", style: "display: none;", tabindex: "-1"}
+      .modal-dialog.modal-xl
+        .modal-content
+          .modal-header
+            %h5.modal-title Safe Send
+            %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "modal", type: "button"}
+          .modal-body
+            %h5.fs-15 About
+            %p.text-muted There is a risk of sending crypto to the wrong address. Safe Send reduces the risk of sending crypto to the wrong address by using a digital chequeing system. A cheque, or check (American English), is a document that orders a bank (or credit union) to pay a specific amount of money from a person's account to the person in whose name the cheque has been issued. With blockchain, the cheque orders a smart contract instead of a bank (or credit union) to make the transfer.
+            .mb-10
+              %h5.fs-15 Requirements
+              %p.text-muted
+                1. A browser extension for signing transactions such as SubWallet, Aleph Zero Signer, Polkadotjs or Talisman.
+                %br
+                2. AZERO for gas
+            .mb-10
+              %h5.fs-15 Instructions
+              %p.text-muted
+                1. Sender: enable Safe Send smart contract to transfer token from sender's account to recipient.
+                %br
+                2. Sender: create cheque with recipient's address, amount and token.
+                %br
+                3. Sender: Tell recipient that a cheque has been created.
+                %br
+                4. Recipient: Collect funds.
+            %h5.fs-15 References
+            %p
+              1.
+              = link_to 'GitHub: az_safe_send', 'https://github.com/btn-group/az_safe_send', target: '_blank', rel: 'noopener'
+              %br
+              2.
+              = link_to 'GitHub: safe_send', 'https://github.com/btn-group/safe_send', target: '_blank', rel: 'noopener'
