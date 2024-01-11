@@ -1,0 +1,29 @@
+.container.polkadotjs#cheques-new
+  .row.justify-content-center
+    .col-12
+      .card
+        .card-header
+          .d-flex.align-items-center
+            %h5.card-title.mb-0.flex-grow-1 New Cheque
+        .card-body
+          %form{ name: 'newChequeForm' }
+  /           .mb-5
+  /             %label.form-label{ for: 'address' } Recipient
+  /             %input.form-control#address{ name: 'address', required: true }
+  /           .mb-5
+  /             = render 'balance', balance_container_extra_classes: 'form-label', user_wallet_balance: true, label: 'Transferrable', active_balance_link: true, data: { input_selector_to_click_fill_to: "form[name='azSafeSendForm'] input[name=amount]", reduce_amount_if_azero: true }
+  /             .input-group
+  /               %input.border-right-0.form-control#amount{ name: 'amount', autocomplete: 'off', required: true, type: 'number', step: 'any', min: 0 }
+  /               / = render 'token_button', additional_button_classes: 'btn-flush btn-outline border-left-0 pe-3 rounded-end', button_id: 'fungible-token-button', data_target: '#fungibleTokens', token: @fungible_tokens.find_by(symbol: 'AZERO')
+  /           .mb-5.pb-0
+  /             %label.form-label#form-fee Fee: Loading...
+  /           .d-flex
+  /             %button.btn.btn-secondary.me-5{ type: 'button' }
+  /               Cancel
+  /             %button.btn.btn-primary{ type: 'submit' }
+  /               .d-none.loading
+  /                 %em.spinner-grow.spinner-grow-sm{ 'aria-hidden' => 'true', :role => 'status' }
+  /                 %em Loading...
+  /               .ready
+  /                 Create
+  / = render 'token_list', modal_title_id: 'fungibleTokenLabel', modal_id: 'fungibleTokens', modal_content_id: 'token-list', modal_input_id: 'input-text-1', cryptocurrencies: @fungible_tokens, label_type: 'symbol', include_other: true

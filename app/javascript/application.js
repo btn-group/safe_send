@@ -7,12 +7,16 @@ import "../../lib/assets/js/app";
 
 // === CUSTOM ===
 import { CHEQUES_INDEX } from "./cheques/index";
+import { CHEQUES_NEW } from "./cheques/new";
 
 // === GLOBAL LISTENERS ===
 $(document).on("turbo:load", function () {
   $("html").attr("data-preloader", "enable");
   if ($("#cheques-index").length) {
     CHEQUES_INDEX.init();
+  }
+  if ($("#cheques-new").length) {
+    CHEQUES_NEW.init();
   }
 });
 
