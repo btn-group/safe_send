@@ -1,0 +1,73 @@
+require:
+  - rubocop-capybara
+  - rubocop-rails
+  - rubocop-performance
+  - rubocop-rspec
+
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  TargetRubyVersion: 3.2.1
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  Exclude:
+    - 'db/schema.rb'
+    - 'db/migrate/*'
+    - 'bin/**'
+    - 'lib/tasks/*'
+    - 'node_modules/**/*'
+    - vendor/bundle/**/*
+  NewCops: enable
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+Layout/IndentationConsistency:
+  EnforcedStyle: indented_internal_methods
+
+Lint/RescueException:
+  Exclude:
+    - 'config/application.rb'
+
+# Fix this when you get more time
+Metrics/MethodLength:
+  Enabled: false
+  Max: 40
+  Exclude:
+    - 'app/controllers/application_controller.rb'
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Guardfile'
+    # - 'spec/**/*.rb'
+    # - 'app/**/concerns/*.rb'
+    # - 'config/routes.rb'
+    # - 'app/admin/*'
+
+Metrics/ParameterLists:
+  Enabled: false
+
+RSpec/ImplicitExpect:
+  EnforcedStyle: should
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/Lambda:
+  EnforcedStyle: lambda
+
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+  AllowInnerSlashes: true
