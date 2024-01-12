@@ -33,12 +33,12 @@
       = render 'footer'
     = render 'preloader'
     = render 'polkadot_account_list'
-    .modal.fade#about-modal{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", style: "display: none;", tabindex: "-1"}
+    .modal.fade#about-modal{ 'aria-hidden' => 'true', 'aria-labelledby' => 'myModalLabel', tabindex: '-1' }
       .modal-dialog.modal-xl
         .modal-content
           .modal-header
             %h5.modal-title Safe Send
-            %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "modal", type: "button"}
+            %button.btn-close{ 'aria-label' => 'Close', 'data-bs-dismiss' => 'modal', type: 'button' }
           .modal-body
             %h5.fs-15 About
             %p.text-muted There is a risk of sending crypto to the wrong address. Safe Send reduces the risk of sending crypto to the wrong address by using a digital chequeing system. A cheque, or check (American English), is a document that orders a bank (or credit union) to pay a specific amount of money from a person's account to the person in whose name the cheque has been issued. With blockchain, the cheque orders a smart contract instead of a bank (or credit union) to make the transfer.
