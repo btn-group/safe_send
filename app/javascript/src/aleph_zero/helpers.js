@@ -12,17 +12,17 @@ export const ALEPH_ZERO = {
     azeroIdRouter: {
       domains: [],
       primaryDomain: undefined,
-      address: (environment = "production") => {
-        if (environment == "production") {
+      address: () => {
+        if (HELPERS.environment == "production") {
           return "5FfRtDtpS3Vcr7BTChjPiQNrcAKu3VLv4E1NGF6ng6j3ZopJ";
         } else {
           return "5HXjj3xhtRMqRYCRaXTDcVPz3Mez2XBruyujw6UEkvn8PCiA";
         }
       },
-      getContract: async (environment = "production") => {
-        let address = ALEPH_ZERO.contracts.azeroIdRouter.address(environment);
+      getContract: async () => {
+        let address = ALEPH_ZERO.contracts.azeroIdRouter.address();
         if (!ALEPH_ZERO.contractsByAddress[address]) {
-          let api = await ALEPH_ZERO.api(environment);
+          let api = await ALEPH_ZERO.api();
           let metadata = await $.ajax({
             url: "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/jt86lapudzdtrjxbz0ljdyi66jp9.json?download=1",
           });
@@ -31,16 +31,16 @@ export const ALEPH_ZERO = {
         }
         return ALEPH_ZERO.contractsByAddress[address];
       },
-      getAndSetDomains: async (environment = "production") => {
+      getAndSetDomains: async () => {
         try {
           ALEPH_ZERO.contracts.azeroIdRouter.domains = [];
           ALEPH_ZERO.contracts.azeroIdRouter.primaryDomain = undefined;
           let address = ALEPH_ZERO.account.address;
           let chainId;
-          if (environment == "staging") {
-            chainId = SupportedChainId.AlephZeroTestnet;
-          } else {
+          if (HELPERS.environment == "production") {
             chainId = SupportedChainId.AlephZero;
+          } else {
+            chainId = SupportedChainId.AlephZeroTestnet;
           }
           let response = await resolveAddressToDomain(address, {
             chainId,
@@ -59,17 +59,17 @@ export const ALEPH_ZERO = {
       },
     },
     safeSend: {
-      address: (environment = "production") => {
-        if (environment == "production") {
+      address: () => {
+        if (HELPERS.environment == "production") {
           return "";
         } else {
           return "5FF18McrzYWuUrEdz9sme3X9jSivKeRc6iejxVpp41EKswCM";
         }
       },
-      getContract: async (environment = "production") => {
-        let address = ALEPH_ZERO.contracts.safeSend.address(environment);
+      getContract: async () => {
+        let address = ALEPH_ZERO.contracts.safeSend.address();
         if (!ALEPH_ZERO.contractsByAddress[address]) {
-          let api = await ALEPH_ZERO.api(environment);
+          let api = await ALEPH_ZERO.api();
           let metadata = await $.ajax({
             url: "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/vyjr8twrmwrxpjxddzrf2ufn9y3o.json?download=1",
           });
@@ -221,24 +221,11 @@ export const ALEPH_ZERO = {
     }
   },
   // AKA API
-  api: async (environment = "production") => {
+  api: async () => {
     let apis;
-    let httpUrls = await ALEPH_ZERO.httpUrls(environment);
-    switch (environment) {
-      case "staging":
-        if (!ALEPH_ZERO.apisStaging) {
-          ALEPH_ZERO.apisStaging = [];
-          for (const url of httpUrls) {
-            let wsProvider = new POLKADOTJS.WsProvider(url);
-            let c = await POLKADOTJS.ApiPromise.create({
-              provider: wsProvider,
-            });
-            ALEPH_ZERO.apisStaging.push(c);
-          }
-        }
-        apis = ALEPH_ZERO.apisStaging;
-        break;
-      default:
+    let httpUrls = await ALEPH_ZERO.httpUrls();
+    switch (HELPERS.environment) {
+      case "production":
         if (!ALEPH_ZERO.apisProduction) {
           ALEPH_ZERO.apisProduction = [];
           for (const url of httpUrls) {
@@ -253,6 +240,19 @@ export const ALEPH_ZERO = {
           await HELPERS.delay(1_000);
         }
         apis = ALEPH_ZERO.apisProduction;
+        break;
+      default:
+        if (!ALEPH_ZERO.apisStaging) {
+          ALEPH_ZERO.apisStaging = [];
+          for (const url of httpUrls) {
+            let wsProvider = new POLKADOTJS.WsProvider(url);
+            let c = await POLKADOTJS.ApiPromise.create({
+              provider: wsProvider,
+            });
+            ALEPH_ZERO.apisStaging.push(c);
+          }
+        }
+        apis = ALEPH_ZERO.apisStaging;
         break;
     }
     return _.sample(apis);
@@ -274,10 +274,10 @@ export const ALEPH_ZERO = {
     });
     return signer;
   },
-  httpUrls: async (environment = "production") => {
-    let urls = ["wss://ws.azero.dev"];
-    if (environment == "staging") {
-      urls = ["wss://ws.test.azero.dev"];
+  httpUrls: async () => {
+    let urls = ["wss://ws.test.azero.dev"];
+    if (HELPERS.environment == "production") {
+      urls = ["wss://ws.azero.dev"];
     }
     return urls;
   },

@@ -48,6 +48,7 @@ export const HELPERS = {
     },
   },
   cryptocurrencies: undefined,
+  environment: "testnet",
   copyToClipboard: (selectorId) => {
     // Select elements
     const target = document.getElementById(selectorId);
@@ -106,10 +107,16 @@ export const HELPERS = {
       }, 3_000);
     });
   },
+  // production = 185
+  // testnet = 184
   getCryptocurrencies: async () => {
     if (!HELPERS.cryptocurrencies) {
+      let blockchainId = 184;
+      if (HELPERS.environment == "production") {
+        blockchainId = 185;
+      }
       HELPERS.cryptocurrencies = await $.ajax({
-        url: `https://btn.group/cryptocurrencies?blockchain_id=185&official=true&include_attachments=true`,
+        url: `https://btn.group/cryptocurrencies?blockchain_id=${blockchainId}&official=true&include_attachments=true`,
         type: "get",
         dataType: "json",
       });
