@@ -58,7 +58,7 @@ export const POLKADOTJS = {
     method,
     options = {},
     args = [],
-    statusCb = undefined
+    statusCb = undefined,
   ) => {
     try {
       // Check if account has sufficient balance
@@ -82,12 +82,12 @@ export const POLKADOTJS = {
         contract,
         method,
         options,
-        args
+        args,
       );
       const { isError, decodedOutput } = decodeOutput(
         dryResult,
         contract,
-        method
+        method,
       );
       if (isError)
         return Promise.reject({
@@ -108,7 +108,7 @@ export const POLKADOTJS = {
 
           const tx = contract.tx[stringCamelCase(method)](
             { ...options, gasLimit },
-            ...args
+            ...args,
           );
 
           const unsub = await tx.signAndSend(account, async (result) => {
@@ -124,7 +124,7 @@ export const POLKADOTJS = {
             const blockHash = result.status[asFinalStatus].toHex();
 
             const errorEvent = result?.events.find(({ event }) =>
-              api.events.system.ExtrinsicFailed.is(event)
+              api.events.system.ExtrinsicFailed.is(event),
             );
             if (errorEvent) {
               // Reject if `ExtrinsicFailed` event was found
@@ -140,7 +140,7 @@ export const POLKADOTJS = {
             } else {
               // Resolve succesfully otherwise
               const successEvent = result?.events.find(({ event }) =>
-                api.events.system.ExtrinsicSuccess.is(event)
+                api.events.system.ExtrinsicSuccess.is(event),
               );
 
               resolve({
@@ -190,7 +190,7 @@ export const POLKADOTJS = {
         contract,
         method,
         options,
-        args
+        args,
       );
       const { isError, decodedOutput } = decodeOutput(result, contract, method);
       if (isError) {
@@ -205,29 +205,29 @@ export const POLKADOTJS = {
   humanizeStringNumberFromSmartContract: (number, decimals) => {
     return document.humanizeStringNumberFromSmartContract(
       document.formatHumanizedNumberForSmartContract(number, 0),
-      decimals
+      decimals,
     );
   },
   initAccountList: (accounts) => {
     $("#polkadot-account-list .list-group").html("");
-    _.sortBy(accounts, ["meta.source", "meta.name"]).forEach(function (
-      account
-    ) {
-      // https://themesbrand.com/velzon/html/saas/ui-lists.html#
-      $("#polkadot-account-list .list-group").append(
-        `<a href="javascript:void(0);" class="d-flex align-items-center border-0 list-group-item list-group-item-action px-0" data-account-address= '${
-          account.address
-        }', data-account-name= '${account.meta.name}', data-account-source='${
-          account.meta.source
-        }'><div class='text-center me-2 logo-container'><img class="h-100" src='https://res.cloudinary.com/hv5cxagki/image/upload/c_pad,dpr_2,f_auto,h_25,w_25,q_100/v1/${HELPERS.walletCloudinaryPublicId(
-          account.meta.source
-        )}'></div><div class="flex-fill"><h5 class="list-title fs-15 mb-1">${
-          account.meta.name
-        }</h5><h7 class="fs-14 mb-0 text-muted"><div class="cell-wrapper-wrapper"><div class="cell"><div class="cell-overflow">${
-          account.address
-        }</div></div></div></h7></div></a>`
-      );
-    });
+    _.sortBy(accounts, ["meta.source", "meta.name"]).forEach(
+      function (account) {
+        // https://themesbrand.com/velzon/html/saas/ui-lists.html#
+        $("#polkadot-account-list .list-group").append(
+          `<a href="javascript:void(0);" class="d-flex align-items-center border-0 list-group-item list-group-item-action px-0" data-account-address= '${
+            account.address
+          }', data-account-name= '${account.meta.name}', data-account-source='${
+            account.meta.source
+          }'><div class='text-center me-2 logo-container'><img class="h-100" src='https://res.cloudinary.com/hv5cxagki/image/upload/c_pad,dpr_2,f_auto,h_25,w_25,q_100/v1/${HELPERS.walletCloudinaryPublicId(
+            account.meta.source,
+          )}'></div><div class="flex-fill"><h5 class="list-title fs-15 mb-1">${
+            account.meta.name
+          }</h5><h7 class="fs-14 mb-0 text-muted"><div class="cell-wrapper-wrapper"><div class="cell"><div class="cell-overflow">${
+            account.address
+          }</div></div></div></h7></div></a>`,
+        );
+      },
+    );
     // Enable clicking change button
     $("#change-account-link").click(function (e) {
       e.preventDefault();
@@ -241,7 +241,7 @@ export const POLKADOTJS = {
         e.preventDefault();
         $("#polkadot-account-list").modal("hide");
         scope.updateAfterAccountSelect(e);
-      }
+      },
     );
   },
   listenForConnectButtonClick: (scope) => {
@@ -260,7 +260,7 @@ export const POLKADOTJS = {
   validateAddress: function (address) {
     try {
       encodeAddress(
-        isHex(address) ? hexToU8a(address) : decodeAddress(address)
+        isHex(address) ? hexToU8a(address) : decodeAddress(address),
       );
       return true;
     } catch (error) {
