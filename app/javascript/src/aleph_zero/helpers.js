@@ -189,7 +189,7 @@ export const ALEPH_ZERO = {
         if (attempt == 20) {
           syncing = true;
           document.showAlertInfo(
-            "Subsquid is out of sync. Transaction was successful but results will not appear in search until sync is fixed."
+            "Subsquid is out of sync. Transaction was successful but results will not appear in search until sync is fixed.",
           );
         }
       }
@@ -333,7 +333,7 @@ export const ALEPH_ZERO = {
       "#page-header-user-dropdown",
       ALEPH_ZERO.account.address,
       ALEPH_ZERO.account.meta.name,
-      ALEPH_ZERO.account.meta.source
+      ALEPH_ZERO.account.meta.source,
     );
     $(document).trigger("aleph_zero_account_selected", {});
   },

@@ -1,24 +1,21 @@
-# README
+# Safe Send
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Development
 
-Things you may want to cover:
+```
+bin/dev
+```
 
-* Ruby version
+## Checking code
+```
+rubocop -A
+haml-lint app/views/
+yarn prettier --write app/javascript/
+scss-lint
+```
 
-* System dependencies
+## References
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+1. https://github.com/btn-group/safe_send
+2. https://github.com/btn-group/az_safe_send
+3. https://github.com/btn-group/squid_safe_send

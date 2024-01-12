@@ -106,7 +106,7 @@ export const HELPERS = {
       }, 3_000);
     });
   },
-  getCryptocurrencies: async() => {
+  getCryptocurrencies: async () => {
     if (!HELPERS.cryptocurrencies) {
       HELPERS.cryptocurrencies = await $.ajax({
         url: `https://btn.group/cryptocurrencies?blockchain_id=185&official=true&include_attachments=true`,
@@ -120,12 +120,12 @@ export const HELPERS = {
     $(`${parentSelector} img.user-address-alias-avatar`).attr(
       "src",
       `https://res.cloudinary.com/hv5cxagki/image/upload/c_scale,dpr_2,f_auto,h_25,q_100/${HELPERS.walletCloudinaryPublicId(
-        source
-      )}`
+        source,
+      )}`,
     );
     $(`${parentSelector} .account-name`).text(name);
     $(`${parentSelector} .account-address-abbreviated`).text(
-      `${address.substring(0, 3)}...${address.slice(-3)}`
+      `${address.substring(0, 3)}...${address.slice(-3)}`,
     );
   },
   walletCloudinaryPublicId: function (id) {

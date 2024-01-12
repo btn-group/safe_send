@@ -1,0 +1,42 @@
+Layout/LineLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+  Max: 50
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/BlockNesting:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Performance/MethodObjectAsBlock:
+  Enabled: false
+
+Rails/FindEach:
+  Exclude:
+    - app/models/pool.rb
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Exclude:
+    - spec/models/cryptocurrency_limit_order_smart_contract_spec.rb
+    - spec/models/order_spec.rb
+
+RSpec/NamedSubject:
+  Enabled: false
+
+Style/GlobalVars:
+  Enabled: false
