@@ -1,4 +1,6 @@
-import { HELPERS } from "../application";
+import { HELPERS } from "../../../application";
+import { ALEPH_ZERO } from "../helpers";
+import { POLKADOTJS } from "../../polkadotjs";
 
 export const CHEQUES_INDEX = {
   datatable: undefined,
@@ -56,5 +58,7 @@ export const CHEQUES_INDEX = {
       },
     });
     $("html").attr("data-preloader", "disable");
+    POLKADOTJS.listenForConnectButtonClick(ALEPH_ZERO);
+    await ALEPH_ZERO.activatePolkadotJsExtension();
   }
 };

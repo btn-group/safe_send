@@ -1,4 +1,4 @@
-import { HELPERS } from "../application";
+import { HELPERS } from "../../../application";
 
 export const CHEQUES_NEW = {
   init: async () => {
