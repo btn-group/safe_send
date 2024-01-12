@@ -1,5 +1,9 @@
 # Safe Send
 
+Safely send crypto via a chequeing system on Aleph Zero. Integrates AZERO.ID as an optional extra check.
+
+Try it out [here](https://safe-send-1b21f69f1e42.herokuapp.com/).
+
 ### Development
 
 ```
