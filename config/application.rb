@@ -35,5 +35,8 @@ module SafeSend
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # https://stackoverflow.com/questions/70401077/rails-7-asset-pipeline-sasscsyntaxerror-with-tailwind
+    config.assets.css_compressor = nil
   end
 end
