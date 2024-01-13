@@ -15,7 +15,11 @@ export const CHEQUES_INDEX = {
           title: "Date",
           fnCreatedCell: function (nTd, sData, _oData, _iRow) {
             $(nTd).html(
-              `<div class="cell-wrapper-wrapper"><div class="cell-holder"><div class="cell-overflow">${sData}</div></div></div>`,
+              new Date(sData).toLocaleString("default", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }),
             );
           },
         },
