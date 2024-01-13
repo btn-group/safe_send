@@ -47,9 +47,9 @@ export const CHEQUES_INDEX = {
           fnCreatedCell: function (nTd, sData, _oData, _iRow) {
             let status = "Cancelled";
             if (sData == 0) {
-              ("Pending collection");
+              status = "Pending collection";
             } else if (sData == 1) {
-              ("Collected");
+              status = "Collected";
             }
             $(nTd).html(status);
           },
