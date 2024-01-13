@@ -12,6 +12,7 @@
               .invalid-feedback
                 Invalid address.
             .mb-3
+              = render 'balance', balance_container_extra_classes: 'form-label required', user_wallet_balance: true, active_balance_link: true, data: { input_selector_to_click_fill_to: "form[name='chequeNewForm'] input[name=amount]", smart_contract_address: "" }
               .position-relative
                 %input.form-control{ name: 'amount', autocomplete: 'off', required: true, type: 'number', step: 'any', min: 0 }
                 .position-absolute{ style: 'top: -1px; right: -5px;' }

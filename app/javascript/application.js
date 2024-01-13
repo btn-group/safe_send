@@ -1,5 +1,6 @@
 import "@hotwired/turbo-rails";
 import "bootstrap";
+import "./src/big_number";
 import "./src/jquery";
 import "./src/lodash";
 import "./src/toastr";
@@ -170,4 +171,19 @@ export const HELPERS = {
 
 document.applyDecimals = function (amount, decimals) {
   return amount / parseFloat("1" + "0".repeat(decimals));
+};
+
+document.humanizeStringNumberFromSmartContract = function (
+  stringNumber,
+  decimals,
+  toFormatDecimals = undefined,
+  replaceCommas = false,
+) {
+  let amount = BigNumber(stringNumber)
+    .shiftedBy(decimals * -1)
+    .toFormat(toFormatDecimals);
+  if (replaceCommas) {
+    amount = amount.replace(/,/g, "");
+  }
+  return amount;
 };

@@ -77,11 +77,11 @@ export const CHEQUES_INDEX = {
             if (oData.status == 0) {
               let linkClass = "cancel-cheque-link";
               let btnClass = "btn-danger";
-              let btnText = "Cancel"
+              let btnText = "Cancel";
               if (oData.to == ALEPH_ZERO.account.address) {
                 linkClass = "collect-cheque-link";
                 btnClass = "btn-primary";
-                btnText = "Collect"
+                btnText = "Collect";
               }
               let html = `<a href="#" data-cheque-id=${oData.id} class="${linkClass} btn ${btnClass} btn-sm"><span class="d-none loading"><em aria-hidden="true" class="spinner-grow spinner-grow-sm" role="status"></em><em class="loading-status">Loading...</em></span><span class="ready">${btnText}</span></a>`;
               $(nTd).html(html);
