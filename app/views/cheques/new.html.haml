@@ -12,11 +12,13 @@
               .invalid-feedback
                 Invalid address.
             .mb-3
-
               .position-relative
                 %input.form-control{ name: 'amount', autocomplete: 'off', required: true, type: 'number', step: 'any', min: 0 }
                 .position-absolute{ style: 'top: -1px; right: -5px;' }
                   = render 'token_button', additional_button_classes: '', button_id: 'fungible-token-button', data_target: '#fungibleTokens'
+            .mb-3
+              %label.form-label{ for: 'cheque-memo' } Memo
+              %input.form-control#cheque-memo{ name: 'memo', type: 'text' }
             .d-flex.mt-3
               %a.btn.btn-light.me-3{ href: '/' } Cancel
               %button.btn.btn-primary{ type: 'submit' }
