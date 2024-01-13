@@ -6,9 +6,10 @@ export const CHEQUES_NEW = {
   init: async () => {
     let cryptocurrencies = await HELPERS.getCryptocurrencies();
     cryptocurrencies.forEach((c) => {
+      // set token button
       if (!c.smart_contract_id) {
         $("#fungible-token-button .token-symbol").text(c.symbol);
-        $("#fungible-token-button").attr("data-initial-id", c.id);
+        $("#fungible-token-button").attr("data-smart-contract-address", "");
         if (c.attachments.length) {
           $("#fungible-token-button img").attr(
             "src",
@@ -21,16 +22,25 @@ export const CHEQUES_NEW = {
           );
         }
       }
+      // set balance
     });
     CHEQUES_NEW.setFee();
+    CHEQUES_NEW.activateListeners();
     $("html").attr("data-preloader", "disable");
     POLKADOTJS.listenForConnectButtonClick(ALEPH_ZERO);
     await ALEPH_ZERO.activatePolkadotJsExtension();
+  },
+  activateListeners: () => {
+    $(document).on("aleph_zero_account_selected", () => {
+      ALEPH_ZERO.updateWalletBalance("");
+      $(".balance-container").removeClass("d-none");
+    });
   },
   setFee: async () => {
     try {
       const contract = await ALEPH_ZERO.contracts["safeSend"].getContract();
       let api = await ALEPH_ZERO.api();
+      window.api = api;
       let response = await POLKADOTJS.contractQuery(
         api,
         ALEPH_ZERO.b3,

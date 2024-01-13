@@ -151,6 +151,7 @@ export const ALEPH_ZERO = {
       }
     },
   },
+  walletBalances: {},
   activatePolkadotJsExtension: async () => {
     let response = await POLKADOTJS.connectPolkadotjsExtension();
     ALEPH_ZERO.extensions = response.extensions;
@@ -220,15 +221,18 @@ export const ALEPH_ZERO = {
             ALEPH_ZERO.apisStaging.push(c);
           }
         }
+        while (ALEPH_ZERO.apisStaging.length == 0) {
+          await HELPERS.delay(1_000);
+        }
         apis = ALEPH_ZERO.apisStaging;
-        break;
     }
     return _.sample(apis);
   },
   getBlockHeight: async () => {
     try {
       let api = await ALEPH_ZERO.api();
-      return api.query.system.number();
+      let height = await api.query.system.number();
+      return height.toNumber();
     } catch (err) {
       document.showAlertDanger(err);
     }
@@ -292,5 +296,115 @@ export const ALEPH_ZERO = {
       ALEPH_ZERO.account.meta.source,
     );
     $(document).trigger("aleph_zero_account_selected", {});
+  },
+  updateWalletBalance: async (smartContractAddress) => {
+    let cryptocurrency =
+      HELPERS.cryptocurrenciesByAddress[smartContractAddress];
+    if (cryptocurrency == undefined) {
+      return;
+    }
+
+    let $userBalanceContainers = $(
+      `.user-balance-container[data-smart-contract-address="${smartContractAddress}"]`,
+    );
+    HELPERS.button.disable($userBalanceContainers);
+    // Set wallet balance to empty
+    $userBalanceContainers.find(".balance").text("");
+    let api = await ALEPH_ZERO.api();
+    let balance;
+    let blockHeight;
+    try {
+      if (ALEPH_ZERO.account) {
+        blockHeight = await ALEPH_ZERO.getBlockHeight();
+        if (ALEPH_ZERO.walletBalances[smartContractAddress] == undefined) {
+          ALEPH_ZERO.walletBalances[smartContractAddress] = {};
+        }
+        // If there's no blockheight for that blockchain and cryptocurrency, search that balance
+        if (
+          ALEPH_ZERO.walletBalances[smartContractAddress].blockHeight ==
+            undefined ||
+          blockHeight >
+            ALEPH_ZERO.walletBalances[smartContractAddress].blockHeight
+        ) {
+          ALEPH_ZERO.walletBalances[smartContractAddress].balance = undefined;
+          ALEPH_ZERO.walletBalances[smartContractAddress].blockHeight =
+            blockHeight;
+          if (cryptocurrency.smart_contract) {
+            balance = await ALEPH_ZERO.psp22.balanceOf(
+              cryptocurrency.smart_contract.address,
+              ALEPH_ZERO.account.address,
+              cryptocurrency.smart_contract.abi_url,
+            );
+          } else {
+            const { freeBalance } = await POLKADOTJS.getBalance(
+              api,
+              ALEPH_ZERO.account.address,
+            );
+            window.freeBalance = freeBalance;
+            balance = freeBalance.toBigInt();
+          }
+          if (
+            blockHeight ==
+            ALEPH_ZERO.walletBalances[smartContractAddress].blockHeight
+          ) {
+            ALEPH_ZERO.walletBalances[smartContractAddress].balance = balance;
+          }
+        } else {
+          while (
+            ALEPH_ZERO.walletBalances[smartContractAddress].balance == undefined
+          ) {
+            await document.delay(1_000);
+          }
+          balance = ALEPH_ZERO.walletBalances[smartContractAddress].balance;
+        }
+        if (
+          blockHeight ==
+          ALEPH_ZERO.walletBalances[smartContractAddress].blockHeight
+        ) {
+          // Set balance
+          let balanceFormatted = document.humanizeStringNumberFromSmartContract(
+            balance,
+            cryptocurrency.decimals,
+          );
+          $userBalanceContainers = $(
+            `.user-balance-container[data-smart-contract-address="${smartContractAddress}"]`,
+          );
+          // Set inputToClickFillTo click listeners
+          $userBalanceContainers.each(function (_k, v) {
+            let $v = $(v);
+            let inputToClickFillTo = $v.attr(
+              "data-input-selector-to-click-fill-to",
+            );
+            // Set wallet balances
+            $userBalanceContainers.find(".balance").text(balanceFormatted);
+            // Set wallet balances
+            if (inputToClickFillTo) {
+              $v.find(".balance").off("click");
+              $v.find(".balance").attr("href", "#");
+              $v.find(".balance").on("click", function (e) {
+                e.preventDefault();
+                $(inputToClickFillTo)
+                  .val(balanceFormatted.replace(/,/g, ""))
+                  .trigger("input");
+              });
+            }
+          });
+        }
+      }
+    } catch (err) {
+      if (
+        blockHeight ==
+        ALEPH_ZERO.walletBalances[smartContractAddress].blockHeight
+      ) {
+        document.showAlertDanger(err);
+      }
+    } finally {
+      if (
+        blockHeight ==
+        ALEPH_ZERO.walletBalances[smartContractAddress].blockHeight
+      ) {
+        HELPERS.button.enable($userBalanceContainers);
+      }
+    }
   },
 };
