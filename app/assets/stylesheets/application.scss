@@ -16,6 +16,17 @@
   content: ' *';
 }
 
+.token-list {
+  .modal-body {
+    min-height: 60px;
+  }
+
+  .logo-container {
+    height: 25px;
+    width: 25px;
+  }
+}
+
 // === DROPZONE ===
 .dropzone {
   border-style: dashed;

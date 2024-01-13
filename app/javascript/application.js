@@ -2,6 +2,7 @@ import "@hotwired/turbo-rails";
 import "bootstrap";
 import "./src/big_number";
 import "./src/jquery";
+import "./src/list";
 import "./src/lodash";
 import "./src/toastr";
 
@@ -51,6 +52,7 @@ export const HELPERS = {
   cryptocurrencies: undefined,
   cryptocurrenciesByAddress: {},
   environment: "testnet",
+  lists: {},
   copyToClipboard: (selectorId) => {
     // Select elements
     const target = document.getElementById(selectorId);
@@ -140,6 +142,14 @@ export const HELPERS = {
       });
     }
     return HELPERS.cryptocurrencies;
+  },
+  initTokenLists: (listIds) => {
+    let options = {
+      valueNames: ["token-list-address", "token-list-label", "token-list-name"],
+    };
+    listIds.forEach(function (listId) {
+      HELPERS.lists[listId] = new List(listId, options);
+    });
   },
   setUserAccountMenuToggle: (parentSelector, address, name, source) => {
     $(`${parentSelector} img.user-address-alias-avatar`).attr(
