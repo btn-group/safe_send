@@ -6,7 +6,6 @@ export const CHEQUES_INDEX = {
   datatable: undefined,
   init: async () => {
     let cryptocurrencies = await HELPERS.getCryptocurrencies();
-    console.log(cryptocurrencies);
     CHEQUES_INDEX.datatable = new DataTable("#cheques-table", {
       autoWidth: false,
       columns: [
@@ -27,22 +26,31 @@ export const CHEQUES_INDEX = {
           data: "from",
           title: "Description",
           fnCreatedCell: function (nTd, sData, oData, _iRow) {
+            let description = oData.from;
             if (sData == ALEPH_ZERO.account.address) {
-              $(nTd).html(oData.to);
-            } else {
-              $(nTd).html(oData.from);
+              description = oData.to;
             }
+            if (oData.memo) {
+              description += `<br>Memo: ${oData.memo}`;
+            }
+            $(nTd).html(description);
           },
         },
         {
           data: "amount",
           title: "Amount",
           fnCreatedCell: function (nTd, sData, oData, _iRow) {
-            if (oData.from == ALEPH_ZERO.account.address) {
-              $(nTd).html(sData * -1);
-            } else {
-              $(nTd).html(sData);
+            let smartContractAddress = "";
+            if (oData.tokenAddress) {
+              smartContractAddress = oData.tokenAddress;
             }
+            let decimals =
+              HELPERS.cryptocurrenciesByAddress[smartContractAddress].decimals;
+            let amount = sData;
+            if (oData.from == ALEPH_ZERO.account.address) {
+              amount = amount * -1;
+            }
+            $(nTd).html(document.applyDecimals(amount, decimals));
           },
         },
         {
@@ -93,7 +101,6 @@ export const CHEQUES_INDEX = {
       let response = await ALEPH_ZERO.subsquid.cheques();
       CHEQUES_INDEX.datatable.rows.add(response);
       CHEQUES_INDEX.datatable.columns.adjust().draw();
-      console.log(response);
     });
   },
 };

@@ -48,6 +48,7 @@ export const HELPERS = {
     },
   },
   cryptocurrencies: undefined,
+  cryptocurrenciesByAddress: {},
   environment: "testnet",
   copyToClipboard: (selectorId) => {
     // Select elements
@@ -120,6 +121,15 @@ export const HELPERS = {
         type: "get",
         dataType: "json",
       });
+      HELPERS.cryptocurrencies.forEach((cryptocurrency) => {
+        if (cryptocurrency.smart_contract) {
+          HELPERS.cryptocurrenciesByAddress[
+            cryptocurrency.smart_contract.address
+          ] = cryptocurrency;
+        } else {
+          HELPERS.cryptocurrenciesByAddress[""] = cryptocurrency;
+        }
+      });
     }
     return HELPERS.cryptocurrencies;
   },
@@ -149,4 +159,8 @@ export const HELPERS = {
         return "external-content.duckduckgo-1_memqe7";
     }
   },
+};
+
+document.applyDecimals = function (amount, decimals) {
+  return amount / parseFloat("1" + "0".repeat(decimals));
 };
