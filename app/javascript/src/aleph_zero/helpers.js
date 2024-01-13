@@ -114,7 +114,7 @@ export const ALEPH_ZERO = {
     },
     queryData: () => {
       let query = `query MyQuery {
-        cheques(where: {from_eq: "${ALEPH_ZERO.account.address}", OR: {to_eq: "${ALEPH_ZERO.account.address}"}}) {
+        cheques(orderBy: id_DESC, where: {from_eq: "${ALEPH_ZERO.account.address}", OR: {to_eq: "${ALEPH_ZERO.account.address}"}}) {
           id
           from
           to

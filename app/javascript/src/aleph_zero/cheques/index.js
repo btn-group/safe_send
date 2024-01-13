@@ -44,12 +44,17 @@ export const CHEQUES_INDEX = {
             if (oData.tokenAddress) {
               smartContractAddress = oData.tokenAddress;
             }
-            let cryptocurrency = HELPERS.cryptocurrenciesByAddress[smartContractAddress];
+            let cryptocurrency =
+              HELPERS.cryptocurrenciesByAddress[smartContractAddress];
             let amount = sData;
             if (oData.from == ALEPH_ZERO.account.address) {
               amount = amount * -1;
             }
-            $(nTd).html(`${document.applyDecimals(amount, cryptocurrency.decimals)} ${cryptocurrency.symbol}`);
+            $(nTd).html(
+              `${document.applyDecimals(amount, cryptocurrency.decimals)} ${
+                cryptocurrency.symbol
+              }`,
+            );
           },
         },
         {
@@ -69,10 +74,10 @@ export const CHEQUES_INDEX = {
           className: "text-end",
           defaultContent: "",
           fnCreatedCell: function (nTd, _sData, oData, _iRow) {
-            let html = '<div class="d-flex justify-content-end flex-shrink-0">';
-            html += `<a href="#" data-cheque-id=${oData.id} class="cancel-cheque-link btn btn-icon btn-color-muted btn-bg-light btn-active-color-primary btn-sm"><i class="bi bi-trash-square fs-4 link-primary"></i></a>`;
-            html += "</div>";
-            $(nTd).html(html);
+            if (oData.status == 0 && oData.from == ALEPH_ZERO.account.address) {
+              let html = `<a href="#" data-cheque-id=${oData.id} class="cancel-cheque-link btn btn-link btn-sm"><span class="d-none loading"><em aria-hidden="true" class="spinner-grow spinner-grow-sm" role="status"></em><em class="loading-status">Loading...</em></span><span class="ready">Cancel</span></a>`;
+              $(nTd).html(html);
+            }
           },
         },
       ],
@@ -82,10 +87,31 @@ export const CHEQUES_INDEX = {
       bInfo: false,
       searching: false,
       drawCallback: function () {
-        $("#cheques-index .cancel-cheque-link").on("click", async function (e) {
+        $(".cancel-cheque-link").on("click", async function (e) {
           e.preventDefault();
+          HELPERS.button.disable(e.currentTarget);
           let chequeId = e.currentTarget.getAttribute("data-cheque-id");
-          console.log("Implement cheque destruction here");
+          let api = await ALEPH_ZERO.api();
+          let account = ALEPH_ZERO.account;
+          api.setSigner(ALEPH_ZERO.getSigner());
+          try {
+            const contract =
+              await ALEPH_ZERO.contracts["safeSend"].getContract();
+            let response = await POLKADOTJS.contractTx(
+              api,
+              account.address,
+              contract,
+              "cancel",
+              undefined,
+              [chequeId],
+            );
+            await ALEPH_ZERO.subsquid.waitForSync(response);
+            document.showAlertSuccess(`Cheque cancelled`, true);
+            CHEQUES_INDEX.refreshChequesTable();
+          } catch (err) {
+            document.showAlertDanger(err);
+            HELPERS.button.enable(e.currentTarget);
+          }
         });
         $("#cheques-table").removeClass("dataTable");
       },
@@ -96,10 +122,18 @@ export const CHEQUES_INDEX = {
     await ALEPH_ZERO.activatePolkadotJsExtension();
   },
   activateListeners: () => {
-    $(document).on("aleph_zero_account_selected", async () => {
+    $(document).on("aleph_zero_account_selected", () => {
+      CHEQUES_INDEX.refreshChequesTable();
+    });
+  },
+  refreshChequesTable: async () => {
+    try {
+      CHEQUES_INDEX.datatable.clear();
       let response = await ALEPH_ZERO.subsquid.cheques();
       CHEQUES_INDEX.datatable.rows.add(response);
       CHEQUES_INDEX.datatable.columns.adjust().draw();
-    });
+    } catch (err) {
+      document.showAlertDanger(err);
+    }
   },
 };

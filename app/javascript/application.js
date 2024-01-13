@@ -108,6 +108,13 @@ export const HELPERS = {
       }, 3_000);
     });
   },
+  delay: async (ms) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve("");
+      }, ms);
+    });
+  },
   // production = 185
   // testnet = 184
   getCryptocurrencies: async () => {
