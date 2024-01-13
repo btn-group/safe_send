@@ -16,15 +16,5 @@
             %em
               %b Loading...
           .ready#cheques-container
-            .d-flex.flex-wrap.mb-5
-              .form-check.mb-3.me-5
-                %input.form-check-input#pending{ checked: true, type: 'checkbox' }
-                %label.form-check-label{ for: 'pending' } Pending Collection
-              .form-check.mb-3.me-5
-                %input.form-check-input#collected{ checked: true, type: 'checkbox' }
-                %label.form-check-label{ for: 'collected' } Collected
-              .form-check.mb-3.me-5
-                %input.form-check-input#cancelled{ checked: true, type: 'checkbox' }
-                %label.form-check-label{ for: 'cancelled' } Cancelled
             .table-responsive.table-card.mb-4
               %table.table.align-middle.table-nowrap.mb-0#cheques-table
