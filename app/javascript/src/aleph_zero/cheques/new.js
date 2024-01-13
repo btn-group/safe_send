@@ -12,27 +12,27 @@ export const CHEQUES_NEW = {
     await ALEPH_ZERO.activatePolkadotJsExtension();
   },
   setFee: async () => {
-      try {
-        const contract = await ALEPH_ZERO.contracts[
-          "safeSend"
-        ].getContract();
-        let api = await ALEPH_ZERO.api();
-        let response = await POLKADOTJS.contractQuery(
-          api,
-          ALEPH_ZERO.b3,
-          contract,
-          "config",
-          undefined,
-          []
-        );
-        let fee = parseFloat(response.output.asOk.toHuman().fee.replace(/,/g, '')) / 1_000_000_000_000;
-        if (HELPERS.environment == 'production') {
-          $("#fee-amount").text(`${fee} AZERO`)
-        } else {
-          $("#fee-amount").text(`${fee} TZERO`)
-        }
-      } catch (err) {
-        document.showAlertDanger(err);
+    try {
+      const contract = await ALEPH_ZERO.contracts["safeSend"].getContract();
+      let api = await ALEPH_ZERO.api();
+      let response = await POLKADOTJS.contractQuery(
+        api,
+        ALEPH_ZERO.b3,
+        contract,
+        "config",
+        undefined,
+        [],
+      );
+      let fee =
+        parseFloat(response.output.asOk.toHuman().fee.replace(/,/g, "")) /
+        1_000_000_000_000;
+      if (HELPERS.environment == "production") {
+        $("#fee-amount").text(`${fee} AZERO`);
+      } else {
+        $("#fee-amount").text(`${fee} TZERO`);
       }
-  }
+    } catch (err) {
+      document.showAlertDanger(err);
+    }
+  },
 };

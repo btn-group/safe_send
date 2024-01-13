@@ -63,7 +63,7 @@ export const ALEPH_ZERO = {
         if (HELPERS.environment == "production") {
           return "";
         } else {
-          return "5FF18McrzYWuUrEdz9sme3X9jSivKeRc6iejxVpp41EKswCM";
+          return "5EvmKgK2wiPLnoa53KfsPBpzEpn9DZs54u73xPHL1JWQBzm2";
         }
       },
       getContract: async () => {
@@ -71,7 +71,7 @@ export const ALEPH_ZERO = {
         if (!ALEPH_ZERO.contractsByAddress[address]) {
           let api = await ALEPH_ZERO.api();
           let metadata = await $.ajax({
-            url: "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/vyjr8twrmwrxpjxddzrf2ufn9y3o.json?download=1",
+            url: "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/j01fl47o6l6dv6xh7z2k7nc7tli7.json?download=1",
           });
           ALEPH_ZERO.contractsByAddress[address] =
             new POLKADOTJS.ContractPromise(api, metadata, address);
@@ -83,7 +83,7 @@ export const ALEPH_ZERO = {
   contractsByAddress: {},
   extensions: undefined,
   subsquid: {
-    url: "https://squid.subsquid.io/smart-contract-hub/graphql",
+    url: "https://squid.subsquid.io/squid-safe-send/graphql",
     height: async () => {
       try {
         let response = await $.ajax({
@@ -103,64 +103,33 @@ export const ALEPH_ZERO = {
         document.showAlertDanger(err);
       }
     },
-    // queryData: (search, searchBy, status) => {
-    //   let queryFilterParams;
-    //   let statusQuery = "";
-    //   if (status == "enabled") {
-    //     statusQuery = ", enabled_eq: true";
-    //   } else if (status == "disabled") {
-    //     statusQuery = ", enabled_eq: false";
-    //   }
-    //   if (search.length) {
-    //     switch (searchBy) {
-    //       case "id":
-    //         queryFilterParams = `where: {id_eq: "${search}"${statusQuery}}`;
-    //         break;
-    //       case "address":
-    //         queryFilterParams = `where: {address_containsInsensitive: "${search}"${statusQuery}}`;
-    //         break;
-    //       case "addedBy":
-    //         queryFilterParams = `where: {caller_containsInsensitive: "${search}"${statusQuery}}`;
-    //         break;
-    //       case "groupName":
-    //         queryFilterParams = `where: {group: {name_containsInsensitive: "${search}"${statusQuery}}`;
-    //         break;
-    //       case "projectName":
-    //         queryFilterParams = `where: {projectName_containsInsensitive: "${search}"${statusQuery}}`;
-    //         break;
-    //       // azeroid
-    //       default:
-    //         queryFilterParams = `where: {azeroId_containsInsensitive: "${search}"${statusQuery}}`;
-    //     }
-    //   } else {
-    //     queryFilterParams = `limit: 100, orderBy: createdAt_DESC, where:{${statusQuery}}`;
-    //   }
-    //   let query = `query MyQuery {
-    //     smartContracts(${queryFilterParams}) {
-    //       abiUrl
-    //       address
-    //       auditUrl
-    //       azeroId
-    //       caller
-    //       chain
-    //       contractUrl
-    //       enabled
-    //       github
-    //       id
-    //       projectName
-    //       wasmUrl
-    //       projectWebsite
-    //       createdAt
-    //       group {
-    //         id
-    //         name
-    //       }
-    //     }
-    //   }`;
-    //   return JSON.stringify({
-    //     query,
-    //   });
-    // },
+    cheques: async () => {
+      let response = await $.ajax({
+        type: "post",
+        url: ALEPH_ZERO.subsquid.url,
+        contentType: "application/json; charset=utf-8",
+        data: ALEPH_ZERO.subsquid.queryData(),
+      });
+      return response.data.cheques;
+    },
+    queryData: () => {
+      let query = `query MyQuery {
+        cheques(where: {from_eq: "${ALEPH_ZERO.account.address}", OR: {to_eq: "${ALEPH_ZERO.account.address}"}}) {
+          id
+          from
+          to
+          amount
+          fee
+          tokenAddress
+          status
+          createdAt
+          updatedAt
+        }
+      }`;
+      return JSON.stringify({
+        query,
+      });
+    },
     waitForSync: async (response) => {
       let attempt = 1;
       let height = response.result.blockNumber.toNumber();

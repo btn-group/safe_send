@@ -11,20 +11,48 @@ export const CHEQUES_INDEX = {
       autoWidth: false,
       columns: [
         {
-          data: "created",
-          title: "Created",
+          data: "createdAt",
+          title: "Date",
+          fnCreatedCell: function (nTd, sData, _oData, _iRow) {
+            $(nTd).html(
+              `<div class="cell-wrapper-wrapper"><div class="cell-holder"><div class="cell-overflow">${sData}</div></div></div>`,
+            );
+          },
         },
         {
-          data: "description",
+          data: "from",
           title: "Description",
+          fnCreatedCell: function (nTd, sData, oData, _iRow) {
+            if (sData == ALEPH_ZERO.account.address) {
+              $(nTd).html(oData.to);
+            } else {
+              $(nTd).html(oData.from);
+            }
+          },
         },
         {
           data: "amount",
           title: "Amount",
+          fnCreatedCell: function (nTd, sData, oData, _iRow) {
+            if (oData.from == ALEPH_ZERO.account.address) {
+              $(nTd).html(sData * -1);
+            } else {
+              $(nTd).html(sData);
+            }
+          },
         },
         {
           data: "status",
           title: "Status",
+          fnCreatedCell: function (nTd, sData, _oData, _iRow) {
+            let status = "Cancelled";
+            if (sData == 0) {
+              ("Pending collection");
+            } else if (sData == 1) {
+              ("Collected");
+            }
+            $(nTd).html(status);
+          },
         },
         {
           className: "text-end",
@@ -51,8 +79,17 @@ export const CHEQUES_INDEX = {
         $("#cheques-table").removeClass("dataTable");
       },
     });
+    CHEQUES_INDEX.activateListeners();
     $("html").attr("data-preloader", "disable");
     POLKADOTJS.listenForConnectButtonClick(ALEPH_ZERO);
     await ALEPH_ZERO.activatePolkadotJsExtension();
+  },
+  activateListeners: () => {
+    $(document).on("aleph_zero_account_selected", async () => {
+      let response = await ALEPH_ZERO.subsquid.cheques();
+      CHEQUES_INDEX.datatable.rows.add(response);
+      CHEQUES_INDEX.datatable.columns.adjust().draw();
+      console.log(response);
+    });
   },
 };
