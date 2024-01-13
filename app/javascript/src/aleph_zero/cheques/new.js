@@ -5,7 +5,23 @@ import { POLKADOTJS } from "../../polkadotjs";
 export const CHEQUES_NEW = {
   init: async () => {
     let cryptocurrencies = await HELPERS.getCryptocurrencies();
-    console.log(cryptocurrencies);
+    cryptocurrencies.forEach((c) => {
+      if (!c.smart_contract_id) {
+        $("#fungible-token-button .token-symbol").text(c.symbol);
+        $("#fungible-token-button").attr("data-initial-id", c.id);
+        if (c.attachments.length) {
+          $("#fungible-token-button img").attr(
+            "src",
+            `https://res.cloudinary.com/hv5cxagki/image/upload/c_scale,dpr_2,f_auto,h_25,q_100,w_25/${c.attachments[0].cloudinary_public_id}`,
+          );
+        } else {
+          $("#fungible-token-button img").attr(
+            "src",
+            `https://res.cloudinary.com/hv5cxagki/image/upload/c_scale,dpr_2,f_auto,h_25,q_100,w_25/external-content.duckduckgo-1_memqe7`,
+          );
+        }
+      }
+    });
     CHEQUES_NEW.setFee();
     $("html").attr("data-preloader", "disable");
     POLKADOTJS.listenForConnectButtonClick(ALEPH_ZERO);
