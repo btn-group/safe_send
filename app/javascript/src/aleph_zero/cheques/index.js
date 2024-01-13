@@ -44,13 +44,12 @@ export const CHEQUES_INDEX = {
             if (oData.tokenAddress) {
               smartContractAddress = oData.tokenAddress;
             }
-            let decimals =
-              HELPERS.cryptocurrenciesByAddress[smartContractAddress].decimals;
+            let cryptocurrency = HELPERS.cryptocurrenciesByAddress[smartContractAddress];
             let amount = sData;
             if (oData.from == ALEPH_ZERO.account.address) {
               amount = amount * -1;
             }
-            $(nTd).html(document.applyDecimals(amount, decimals));
+            $(nTd).html(`${document.applyDecimals(amount, cryptocurrency.decimals)} ${cryptocurrency.symbol}`);
           },
         },
         {
