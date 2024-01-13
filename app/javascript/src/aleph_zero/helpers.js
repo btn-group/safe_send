@@ -79,9 +79,137 @@ export const ALEPH_ZERO = {
         return ALEPH_ZERO.contractsByAddress[address];
       },
     },
+    getContract: async (address, abiUrl) => {
+      if (!ALEPH_ZERO.contractsByAddress[address]) {
+        if (!POLKADOTJS.validateAddress(address)) {
+          throw "Address invalid.";
+        }
+
+        await ALEPH_ZERO.contracts.setContract(address, abiUrl);
+      }
+      return ALEPH_ZERO.contractsByAddress[address];
+    },
+    setContract: async (address, abiUrl) => {
+      let api = await ALEPH_ZERO.api();
+      let metadata = await $.ajax({
+        url: abiUrl,
+      });
+      ALEPH_ZERO.contractsByAddress[address] = new POLKADOTJS.ContractPromise(
+        api,
+        metadata,
+        address,
+      );
+      return ALEPH_ZERO.contractsByAddress[address];
+    },
   },
   contractsByAddress: {},
   extensions: undefined,
+  psp22: {
+    allowance: async (
+      tokenAddress,
+      owner,
+      spender,
+      abiUrl = "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/q0076wi0idi03staf8f1rh12vlph.json?download=1",
+    ) => {
+      let contract = await ALEPH_ZERO.contracts.getContract(
+        tokenAddress,
+        abiUrl,
+      );
+      let api = await ALEPH_ZERO.api();
+      let account = ALEPH_ZERO.account;
+      let response = await POLKADOTJS.contractQuery(
+        api,
+        account.address,
+        contract,
+        "psp22::allowance",
+        undefined,
+        [owner, spender],
+      );
+      ALEPH_ZERO.processResponse(response, tokenAddress);
+      let allowance = BigNumber(response.output.asOk.toBigInt());
+      if (!HELPERS.cryptocurrenciesByAddress[tokenAddress]) {
+        HELPERS.cryptocurrenciesByAddress[tokenAddress] = {};
+      }
+      HELPERS.cryptocurrenciesByAddress[tokenAddress][
+        ALEPH_ZERO.account.address
+      ] = {
+        allowance,
+      };
+      return allowance;
+    },
+    balanceOf: async (
+      tokenAddress,
+      owner,
+      abiUrl = "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/q0076wi0idi03staf8f1rh12vlph.json?download=1",
+    ) => {
+      let contract = await ALEPH_ZERO.contracts.getContract(
+        tokenAddress,
+        abiUrl,
+      );
+      let api = await ALEPH_ZERO.api();
+      let response = await POLKADOTJS.contractQuery(
+        api,
+        owner,
+        contract,
+        "psp22::balanceOf",
+        undefined,
+        [owner],
+      );
+      ALEPH_ZERO.processResponse(response, tokenAddress);
+      return BigNumber(response.output.asOk.toBigInt());
+    },
+    increaseAllowance: async (
+      tokenAddress,
+      spender,
+      amount,
+      abiUrl = "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/q0076wi0idi03staf8f1rh12vlph.json?download=1",
+      options = {},
+      callback = undefined,
+    ) => {
+      let contract = await ALEPH_ZERO.contracts.getContract(
+        tokenAddress,
+        abiUrl,
+      );
+      let api = await ALEPH_ZERO.api();
+      api.setSigner(ALEPH_ZERO.getSigner());
+      let account = ALEPH_ZERO.account;
+      let response = await POLKADOTJS.contractTx(
+        api,
+        account.address,
+        contract,
+        "psp22::increase_allowance",
+        options,
+        [spender, amount.toFormat({ groupSeparator: "" })],
+        callback,
+      );
+      ALEPH_ZERO.processResponse(response, tokenAddress);
+    },
+    // What is the contract and abiUrl combo is wrong
+    tokenDecimals: async (
+      address,
+      abiUrl = "https://res.cloudinary.com/hv5cxagki/raw/upload/v1696932021/abis/aleph_zero/az_button_xywglt.json",
+    ) => {
+      if (HELPERS.cryptocurrenciesByAddress[address]) {
+        return HELPERS.cryptocurrenciesByAddress[address].decimals;
+      }
+      let contract = await ALEPH_ZERO.contracts.getContract(
+        tokenAddress,
+        abiUrl,
+      );
+      let api = await ALEPH_ZERO.api();
+      let response = await POLKADOTJS.contractQuery(
+        api,
+        ALEPH_ZERO.b3,
+        contract,
+        "psp22Metadata::tokenDecimals",
+      );
+      ALEPH_ZERO.processResponse(response, address);
+      HELPERS.cryptocurrenciesByAddress[address] = {
+        decimals: Number(response.output.asOk.toHuman()),
+      };
+      return HELPERS.cryptocurrenciesByAddress[address].decimals;
+    },
+  },
   subsquid: {
     url: "https://squid.subsquid.io/squid-safe-send/graphql",
     height: async () => {
@@ -258,6 +386,14 @@ export const ALEPH_ZERO = {
     link = `https://alephzero.subscan.io/${type}/${identifier}`;
     return link;
   },
+  processResponse: (response, address) => {
+    if (response.result.isErr) {
+      if (response.result.asErr.toJSON().module.error == "0x06000000") {
+        ALEPH_ZERO.contractsByAddress[address] = undefined;
+        throw "Contract not found.";
+      }
+    }
+  },
   updateAfterAccountSelect: (event) => {
     let setNewAccount = false;
     let newAddress = event.currentTarget.dataset.accountAddress;
@@ -333,7 +469,6 @@ export const ALEPH_ZERO = {
             balance = await ALEPH_ZERO.psp22.balanceOf(
               cryptocurrency.smart_contract.address,
               ALEPH_ZERO.account.address,
-              cryptocurrency.smart_contract.abi_url,
             );
           } else {
             const { freeBalance } = await POLKADOTJS.getBalance(

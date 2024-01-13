@@ -1,29 +1,14 @@
 - include_other ||= false
 
-.modal.fade.tokenList{ 'aria-hidden' => 'true', 'aria-labelledby' => modal_title_id, role: 'dialog', tabindex: '-1', id: modal_id }
-  .modal-dialog.modal-dialog-scrollable{ role: 'document' }
-    .modal-content.vh-90{ id: modal_content_id }
+.modal.fade.token-list{ 'aria-hidden' => 'true', 'aria-labelledby' => modal_title_id, role: 'dialog', tabindex: '-1', id: modal_id }
+  .modal-dialog.modal-dialog-scrollable
+    .modal-content{ id: modal_content_id }
       .modal-header.pb-0.border-0
-        %h3.modal-title{ id: modal_title_id } Select a token
-        .btn.btn-icon.btn-sm.btn-active-light-primary.ms-2{ 'aria-label' => 'Close', 'data-bs-dismiss' => 'modal' }
-          %span= get_svg_icon('duotune/arrows/arr097.svg', 'svg-icon svg-icon-2hx')
+        %h5.modal-title{ id: modal_title_id } Select a token
+        %button.btn-close{ 'aria-label' => 'Close', 'data-bs-dismiss' => 'modal', type: 'button' }
       .modal-header.border-bottom.pt-2
         %input.form-control.search{ autocomplete: 'off', name: 'inputname1', type: 'text', placeholder: 'Search', id: modal_input_id }
       .modal-body
         .position-absolute No result found.
-        .card
-          %ul.list
-            - if include_other
-              %li.bg-hover-light.p-0{ 'data-cryptocurrency-id': 0, 'data-cryptocurrency-address': nil, 'data-cryptocurrency-name': 'OTHER', 'data-cryptocurrency-cloudinary-public-id': nil, 'data-cryptocurrency-symbol': 'OTHER' }
-                = link_to '#', class: 'd-flex align-items-center' do
-                  .over-flow-hidden.symbol.symbol-25px.symbol-circle.me-5
-                    = cl_image_tag('external-content.duckduckgo-1_memqe7', transformation: [{ fetch_format: :auto, quality: 100, crop: :scale, dpr: 2, height: 25, width: 25 }])
-                  .fw-bold.text-gray-900 OTHER
-            - cryptocurrencies.each do |cryptocurrency|
-              %li.bg-hover-light.p-0{ 'data-cryptocurrency-id': cryptocurrency.id, 'data-cryptocurrency-address': cryptocurrency.address, 'data-cryptocurrency-data-hash': cryptocurrency.data_hash, 'data-cryptocurrency-name': cryptocurrency.name, 'data-cryptocurrency-cloudinary-public-id': cryptocurrency.attachments.first&.cloudinary_public_id, 'data-cryptocurrency-symbol': cryptocurrency.symbol, 'data-cryptocurrency-decimals': cryptocurrency.decimals, 'data-cryptocurrency-price': cryptocurrency.price, 'data-cryptocurrency-nft': cryptocurrency.nft.to_s }
-                = link_to '#', class: 'd-flex align-items-center' do
-                  .over-flow-hidden.symbol.symbol-25px.symbol-circle.me-5
-                    = cl_image_tag(cryptocurrency.attachments.first&.cloudinary_public_id || 'external-content.duckduckgo-1_memqe7', transformation: [{ fetch_format: :auto, quality: 100, crop: :scale, dpr: 2, height: 25, width: 25 }])
-                  .fw-bold.text-gray-900.token-list-label= label_type == 'symbol' ? cryptocurrency.symbol : cryptocurrency.name
-                  .d-none.token-list-address= cryptocurrency.address
-                  .d-none.token-list-name= cryptocurrency.name
+        .card.border-0.shadow-none.mb-0
+          .list-group.list
