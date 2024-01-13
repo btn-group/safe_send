@@ -119,6 +119,7 @@ export const ALEPH_ZERO = {
           from
           to
           amount
+          memo
           fee
           tokenAddress
           status
