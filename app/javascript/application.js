@@ -40,6 +40,21 @@ export const HELPERS = {
       $button.find(".loading").addClass("d-none");
       $button.find(".ready").removeClass("d-none");
     },
+    setTokenButton: (selector, address) => {
+      let cryptocurrency = HELPERS.cryptocurrenciesByAddress[address];
+      let cloudinaryPublicId = "external-content.duckduckgo-1_memqe7";
+      if (cryptocurrency.attachments[0]) {
+        cloudinaryPublicId = cryptocurrency.attachments[0].cloudinary_public_id;
+      }
+      $(selector).find(".token-symbol").text(cryptocurrency.symbol);
+      $(selector).attr("data-smart-contract-address", address);
+      $(selector)
+        .find("img")
+        .attr(
+          "src",
+          `https://res.cloudinary.com/hv5cxagki/image/upload/c_scale,dpr_2,f_auto,h_25,q_100,w_25/${cloudinaryPublicId}`,
+        );
+    },
   },
   cookies: {
     get: (id) => {

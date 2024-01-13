@@ -18,26 +18,23 @@ export const CHEQUES_NEW = {
       ALEPH_ZERO.updateWalletBalance("");
       $(".balance-container").removeClass("d-none");
     });
+    $(".token-list .list-group-item").on("click", function (e) {
+      e.preventDefault();
+      let modal = $(e.currentTarget).closest(".token-list");
+      // Hide tokenList
+      $(modal).modal("hide");
+      // Refresh input and search
+      $(modal).find("input.search").val("");
+      HELPERS.lists["token-list"].search();
+
+      CHEQUES_NEW.updateAfterTokenSelect(e);
+    });
   },
   initTokenListAndButton: async () => {
     let cryptocurrencies = await HELPERS.getCryptocurrencies();
+    let selector = "#fungible-token-button";
+    HELPERS.button.setTokenButton(selector, "");
     _.sortBy(cryptocurrencies, ["symbol"]).forEach(function (c) {
-      // set token button
-      if (!c.smart_contract_id) {
-        $("#fungible-token-button .token-symbol").text(c.symbol);
-        $("#fungible-token-button").attr("data-smart-contract-address", "");
-        if (c.attachments.length) {
-          $("#fungible-token-button img").attr(
-            "src",
-            `https://res.cloudinary.com/hv5cxagki/image/upload/c_scale,dpr_2,f_auto,h_25,q_100,w_25/${c.attachments[0].cloudinary_public_id}`,
-          );
-        } else {
-          $("#fungible-token-button img").attr(
-            "src",
-            `https://res.cloudinary.com/hv5cxagki/image/upload/c_scale,dpr_2,f_auto,h_25,q_100,w_25/external-content.duckduckgo-1_memqe7`,
-          );
-        }
-      }
       // https://themesbrand.com/velzon/html/saas/ui-lists.html#
       let smartContractAddress = "";
       if (c.smart_contract) {
@@ -76,5 +73,17 @@ export const CHEQUES_NEW = {
     } catch (err) {
       document.showAlertDanger(err);
     }
+  },
+  updateAfterTokenSelect: async (event) => {
+    let selector = "#fungible-token-button";
+    let address = event.currentTarget.dataset.cryptocurrencyAddress;
+    let cryptocurrency = HELPERS.cryptocurrenciesByAddress[address];
+    $("form[name=chequeNewForm] .balance-container").attr(
+      "data-smart-contract-address",
+      address,
+    );
+    HELPERS.button.setTokenButton(selector, address);
+    ALEPH_ZERO.updateWalletBalance(address);
+    // ALEPH_ZERO.safeSend.setSubmitLabelBasedOnAllowance();
   },
 };
