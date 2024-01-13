@@ -138,8 +138,6 @@ export const ALEPH_ZERO = {
       while (syncing) {
         await HELPERS.delay(3_000);
         let squidHeight = await ALEPH_ZERO.subsquid.height();
-        console.log(squidHeight);
-        console.log(height);
         if (squidHeight >= height) {
           syncing = false;
         }

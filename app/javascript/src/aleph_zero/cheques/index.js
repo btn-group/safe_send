@@ -5,7 +5,7 @@ import { POLKADOTJS } from "../../polkadotjs";
 export const CHEQUES_INDEX = {
   datatable: undefined,
   init: async () => {
-    let cryptocurrencies = await HELPERS.getCryptocurrencies();
+    await HELPERS.getCryptocurrencies();
     CHEQUES_INDEX.datatable = new DataTable("#cheques-table", {
       autoWidth: false,
       columns: [
@@ -74,8 +74,16 @@ export const CHEQUES_INDEX = {
           className: "text-end",
           defaultContent: "",
           fnCreatedCell: function (nTd, _sData, oData, _iRow) {
-            if (oData.status == 0 && oData.from == ALEPH_ZERO.account.address) {
-              let html = `<a href="#" data-cheque-id=${oData.id} class="cancel-cheque-link btn btn-link btn-sm"><span class="d-none loading"><em aria-hidden="true" class="spinner-grow spinner-grow-sm" role="status"></em><em class="loading-status">Loading...</em></span><span class="ready">Cancel</span></a>`;
+            if (oData.status == 0) {
+              let linkClass = "cancel-cheque-link";
+              let btnClass = "btn-danger";
+              let btnText = "Cancel"
+              if (oData.to == ALEPH_ZERO.account.address) {
+                linkClass = "collect-cheque-link";
+                btnClass = "btn-primary";
+                btnText = "Collect"
+              }
+              let html = `<a href="#" data-cheque-id=${oData.id} class="${linkClass} btn ${btnClass} btn-sm"><span class="d-none loading"><em aria-hidden="true" class="spinner-grow spinner-grow-sm" role="status"></em><em class="loading-status">Loading...</em></span><span class="ready">${btnText}</span></a>`;
               $(nTd).html(html);
             }
           },
@@ -107,6 +115,32 @@ export const CHEQUES_INDEX = {
             );
             await ALEPH_ZERO.subsquid.waitForSync(response);
             document.showAlertSuccess(`Cheque cancelled`, true);
+            CHEQUES_INDEX.refreshChequesTable();
+          } catch (err) {
+            document.showAlertDanger(err);
+            HELPERS.button.enable(e.currentTarget);
+          }
+        });
+        $(".collect-cheque-link").on("click", async function (e) {
+          e.preventDefault();
+          HELPERS.button.disable(e.currentTarget);
+          let chequeId = e.currentTarget.getAttribute("data-cheque-id");
+          let api = await ALEPH_ZERO.api();
+          let account = ALEPH_ZERO.account;
+          api.setSigner(ALEPH_ZERO.getSigner());
+          try {
+            const contract =
+              await ALEPH_ZERO.contracts["safeSend"].getContract();
+            let response = await POLKADOTJS.contractTx(
+              api,
+              account.address,
+              contract,
+              "collect",
+              undefined,
+              [chequeId],
+            );
+            await ALEPH_ZERO.subsquid.waitForSync(response);
+            document.showAlertSuccess("Success", true);
             CHEQUES_INDEX.refreshChequesTable();
           } catch (err) {
             document.showAlertDanger(err);
