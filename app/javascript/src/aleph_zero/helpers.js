@@ -10,32 +10,8 @@ export const ALEPH_ZERO = {
   b3: "5HimuS19MhHX9EggD9oZzx297qt3UxEdkcc5NWAianPAQwHG",
   contracts: {
     azeroIdRouter: {
-      domains: [],
-      primaryDomain: undefined,
-      address: () => {
-        if (HELPERS.environment == "production") {
-          return "5FfRtDtpS3Vcr7BTChjPiQNrcAKu3VLv4E1NGF6ng6j3ZopJ";
-        } else {
-          return "5HXjj3xhtRMqRYCRaXTDcVPz3Mez2XBruyujw6UEkvn8PCiA";
-        }
-      },
-      getContract: async () => {
-        let address = ALEPH_ZERO.contracts.azeroIdRouter.address();
-        if (!ALEPH_ZERO.contractsByAddress[address]) {
-          let api = await ALEPH_ZERO.api();
-          let metadata = await $.ajax({
-            url: "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/jt86lapudzdtrjxbz0ljdyi66jp9.json?download=1",
-          });
-          ALEPH_ZERO.contractsByAddress[address] =
-            new POLKADOTJS.ContractPromise(api, metadata, address);
-        }
-        return ALEPH_ZERO.contractsByAddress[address];
-      },
-      getAndSetDomains: async () => {
+      getPrimaryDomain: async (address) => {
         try {
-          ALEPH_ZERO.contracts.azeroIdRouter.domains = [];
-          ALEPH_ZERO.contracts.azeroIdRouter.primaryDomain = undefined;
-          let address = ALEPH_ZERO.account.address;
           let chainId;
           if (HELPERS.environment == "production") {
             chainId = SupportedChainId.AlephZero;
@@ -49,10 +25,7 @@ export const ALEPH_ZERO = {
             throw response.error.message;
           }
 
-          ALEPH_ZERO.contracts.azeroIdRouter.domains =
-            response.allPrimaryDomains;
-          ALEPH_ZERO.contracts.azeroIdRouter.primaryDomain =
-            response.primaryDomain;
+          return response.primaryDomain;
         } catch (err) {
           document.showAlertDanger(err);
         }
