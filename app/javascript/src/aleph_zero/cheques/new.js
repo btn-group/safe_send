@@ -29,6 +29,14 @@ export const CHEQUES_NEW = {
 
       CHEQUES_NEW.updateAfterTokenSelect(e);
     });
+    $("#cheque-to").on("input", async () => {
+      document.chequeNewForm.azeroId.value = "";
+      let address = $("#cheque-to").val();
+      if (POLKADOTJS.validateAddress(address)) {
+        document.chequeNewForm.azeroId.value =
+          await ALEPH_ZERO.contracts.azeroIdRouter.getPrimaryDomain(address);
+      }
+    });
   },
   initTokenListAndButton: async () => {
     let cryptocurrencies = await HELPERS.getCryptocurrencies();
