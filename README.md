@@ -1,6 +1,10 @@
 # Safe Send
 
-Safely send crypto via a chequeing system on Aleph Zero. Integrates AZERO.ID as an optional extra check.
+Safe Send is a decentralised payment gateway that makes it easy and safe for businesses to accept crypto on Aleph Zero. By utilising a chequeing mechanism, send/collect, it makes crypto payments forgiving enough for mass adoption.
+
+Safe Send also integrates AZERO.ID, to provide an optional, extra layer of protection. It does this by verifying that the recipient's wallet matches the provided AZERO.ID.
+
+Safe Send is designed to fit into modern e-commerce workflows.
 
 Try it out [here](https://safe-send-1b21f69f1e42.herokuapp.com/).
 
@@ -23,3 +27,4 @@ scss-lint
 1. https://github.com/btn-group/safe_send
 2. https://github.com/btn-group/az_safe_send
 3. https://github.com/btn-group/squid_safe_send
+4. https://smartcontracthub.tech

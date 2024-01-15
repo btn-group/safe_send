@@ -4,7 +4,7 @@
     %title Safe Send
     %meta{ charset: 'utf-8' }
     = favicon_link_tag 'favicon.png'
-    %meta{ name: 'description', content: 'Safely send crypto via an allowance/collect mechanism.' }
+    %meta{ name: 'description', content: 'Safe Send is a decentralised payment gateway that makes it easy and safe for businesses to accept crypto on Aleph Zero. By utilising a chequeing mechanism, send/collect, it makes crypto payments forgiving enough for mass adoption.' }
     %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
     %meta{ property: 'og:image', content: 'favicon.png' }
     %meta{ property: 'og:site_name', content: 'Safe Send' }
@@ -38,28 +38,35 @@
             %h5.modal-title Safe Send
             %button.btn-close{ 'aria-label' => 'Close', 'data-bs-dismiss' => 'modal', type: 'button' }
           .modal-body
-            %h5.fs-15 About
-            %p.text-muted There is a risk of sending crypto to the wrong address. Safe Send reduces the risk of sending crypto to the wrong address by using a digital chequeing system. A cheque, or check (American English), is a document that orders a bank (or credit union) to pay a specific amount of money from a person's account to the person in whose name the cheque has been issued. With blockchain, the cheque orders a smart contract instead of a bank (or credit union) to make the transfer.
+            %p.text-muted Safe Send is a decentralised payment gateway that makes it easy and safe for businesses to accept crypto on Aleph Zero. By utilising a chequeing mechanism, send/collect, it makes crypto payments forgiving enough for mass adoption.
+            %p.text-muted Safe Send also integrates AZERO.ID, to provide an optional, extra layer of protection. It does this by verifying that the recipient's wallet matches the provided AZERO.ID.
+            %p.text-muted Safe Send is designed to fit into modern e-commerce workflows.
             .mb-10
               %h5.fs-15 Requirements
               %p.text-muted
                 1. A browser extension for signing transactions such as SubWallet, Aleph Zero Signer, Polkadotjs or Talisman.
                 %br
-                2. AZERO for gas
+                2.
+                = link_to 'TZERO', 'https://faucet.test.azero.dev/', target: '_blank', rel: 'noopener'
+                for gas
             .mb-10
               %h5.fs-15 Instructions
               %p.text-muted
-                1. Sender: enable Safe Send smart contract to transfer token from sender's account to recipient.
+                1. Sender: Create cheque with recipient's address, crypto, token and memo.
                 %br
-                2. Sender: create cheque with recipient's address, amount and token.
+                2. Sender: Tell recipient that a cheque has been created.
                 %br
-                3. Sender: Tell recipient that a cheque has been created.
-                %br
-                4. Recipient: Collect funds.
+                3. Recipient: Review details then collect funds.
             %h5.fs-15 References
-            %p
+            %p.text-muted
               1.
-              = link_to 'GitHub: az_safe_send', 'https://github.com/btn-group/az_safe_send', target: '_blank', rel: 'noopener'
+              =link_to 'GitHub: az_safe_send', 'https://github.com/btn-group/az_safe_send', target: '_blank', rel: 'noopener'
               %br
               2.
               = link_to 'GitHub: safe_send', 'https://github.com/btn-group/safe_send', target: '_blank', rel: 'noopener'
+              %br
+              3.
+              = link_to 'GitHub: squid_safe_send', 'https://github.com/btn-group/squid_safe_send', target: '_blank', rel: 'noopener'
+              %br
+              4.
+              = link_to 'smartcontracthub.tech', 'https://smartcontracthub.tech', target: '_blank', rel: 'noopener'
