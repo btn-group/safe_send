@@ -5,6 +5,11 @@ import { POLKADOTJS } from "../../polkadotjs";
 export const CHEQUES_INDEX = {
   datatable: undefined,
   init: async () => {
+    if (HELPERS.toastr.message) {
+      HELPERS.toastr.alertType(HELPERS.toastr.message, true);
+      HELPERS.toastr.message = undefined;
+      HELPERS.toastr.alertType = undefined;
+    }
     await HELPERS.getCryptocurrencies();
     CHEQUES_INDEX.datatable = new DataTable("#cheques-table", {
       autoWidth: false,
