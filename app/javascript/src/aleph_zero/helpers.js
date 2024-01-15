@@ -461,7 +461,7 @@ export const ALEPH_ZERO = {
           while (
             ALEPH_ZERO.walletBalances[smartContractAddress].balance == undefined
           ) {
-            await document.delay(1_000);
+            await HELPERS.delay(1_000);
           }
           balance = ALEPH_ZERO.walletBalances[smartContractAddress].balance;
         }
