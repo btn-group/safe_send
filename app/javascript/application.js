@@ -68,6 +68,7 @@ export const HELPERS = {
   cryptocurrenciesByAddress: {},
   environment: "testnet",
   lists: {},
+  toastr: {},
   copyToClipboard: (selectorId) => {
     // Select elements
     const target = document.getElementById(selectorId);
@@ -196,6 +197,19 @@ export const HELPERS = {
 
 document.applyDecimals = function (amount, decimals) {
   return amount / parseFloat("1" + "0".repeat(decimals));
+};
+
+document.formatHumanizedNumberForSmartContract = function (
+  humanizedNumber,
+  decimals,
+) {
+  if (humanizedNumber == "") {
+    humanizedNumber = "0";
+  }
+  humanizedNumber = String(humanizedNumber);
+  return BigNumber(humanizedNumber.replace(/,/g, ""))
+    .shiftedBy(decimals)
+    .toFixed();
 };
 
 document.humanizeStringNumberFromSmartContract = function (
