@@ -38,6 +38,19 @@ export const CHEQUES_NEW = {
           await ALEPH_ZERO.contracts.azeroIdRouter.getPrimaryDomain(address);
       }
     });
+    // If selectedCryptocurrencyId > 0, we can do all that stuff with the allowance and decimals etc
+    // But otherwise only do it when address is valid
+    $('form[name="chequesNewForm"] input[name="amount"]').on(
+      "input",
+      async (_evt) => {
+        let amount = BigNumber(
+          $('form[name="chequesNewForm"] input[name="amount"]').val(),
+        );
+        if (amount.isGreaterThan(0)) {
+          CHEQUES_NEW.setSubmitLabelBasedOnAllowance();
+        }
+      },
+    );
 
     // === FORMS ===
     // 0 == Pending Collection
@@ -61,7 +74,6 @@ export const CHEQUES_NEW = {
       try {
         let to = document.chequesNewForm.to.value;
         let amount = document.chequesNewForm.amount.value;
-        let tokenAddress = undefined;
         let cryptocurrency =
           HELPERS.cryptocurrenciesByAddress[
             $("form[name=chequesNewForm] .balance-container").attr(
@@ -72,31 +84,54 @@ export const CHEQUES_NEW = {
           amount,
           cryptocurrency.decimals,
         );
-        let value = BigNumber(CHEQUES_NEW.fee);
-        if (cryptocurrency.smart_contract) {
-          tokenAddress = cryptocurrency.smart_contract.address;
+
+        // Check allowance first
+        if (
+          cryptocurrency.smart_contract &&
+          cryptocurrency[ALEPH_ZERO.account.address].allowance.lt(
+            BigNumber(amount),
+          )
+        ) {
+          await ALEPH_ZERO.psp22.increaseAllowance(
+            cryptocurrency.smart_contract.address,
+            ALEPH_ZERO.contracts.safeSend.address(),
+            BigNumber(POLKADOTJS.maxU128).minus(
+              cryptocurrency[ALEPH_ZERO.account.address].allowance,
+            ),
+          );
+          await CHEQUES_NEW.setSubmitLabelBasedOnAllowance(true);
+          document.showAlertSuccess("Success.", true);
         } else {
-          value = BigNumber(amount).plus(value);
+          let tokenAddress = undefined;
+          let value = BigNumber(CHEQUES_NEW.fee);
+          if (cryptocurrency.smart_contract) {
+            tokenAddress = cryptocurrency.smart_contract.address;
+          } else {
+            value = BigNumber(amount).plus(value);
+          }
+          let azeroId = undefined;
+          if (document.chequesNewForm.azeroId.value.length) {
+            azeroId = document.chequesNewForm.azeroId.value.length;
+          }
+          let memo = document.chequesNewForm.memo.value;
+          let api = await ALEPH_ZERO.api();
+          let account = ALEPH_ZERO.account;
+          api.setSigner(ALEPH_ZERO.getSigner());
+          const contract = await ALEPH_ZERO.contracts["safeSend"].getContract();
+          value = new POLKADOTJS.BN(value.toFixed());
+          let response = await POLKADOTJS.contractTx(
+            api,
+            account.address,
+            contract,
+            "create",
+            { value },
+            [to, amount, tokenAddress, azeroId, memo],
+          );
+          await ALEPH_ZERO.subsquid.waitForSync(response);
+          HELPERS.toastr.message = "Success";
+          HELPERS.toastr.alertType = document.showAlertSuccess;
+          Turbo.visit("/");
         }
-        let azeroId = undefined;
-        let memo = document.chequesNewForm.memo.value;
-        let api = await ALEPH_ZERO.api();
-        let account = ALEPH_ZERO.account;
-        api.setSigner(ALEPH_ZERO.getSigner());
-        const contract = await ALEPH_ZERO.contracts["safeSend"].getContract();
-        value = new POLKADOTJS.BN(value.toFixed());
-        let response = await POLKADOTJS.contractTx(
-          api,
-          account.address,
-          contract,
-          "create",
-          { value },
-          [to, amount, tokenAddress, azeroId, memo],
-        );
-        await ALEPH_ZERO.subsquid.waitForSync(response);
-        HELPERS.toastr.message = "Success";
-        HELPERS.toastr.alertType = document.showAlertSuccess;
-        Turbo.visit("/");
       } catch (err) {
         document.showAlertDanger(err);
       } finally {
@@ -149,6 +184,55 @@ export const CHEQUES_NEW = {
       document.showAlertDanger(err);
     }
   },
+  setSubmitLabelBasedOnAllowance: async (refreshAllowance = false) => {
+    let tokenAddress = $("form[name=chequesNewForm] .balance-container").attr(
+      "data-smart-contract-address",
+    );
+    let cryptocurrency = HELPERS.cryptocurrenciesByAddress[tokenAddress];
+    if (cryptocurrency.smart_contract) {
+      // Disable button before checking
+      HELPERS.button.disable(
+        'form[name="chequesNewForm"] button[type="submit"]',
+      );
+      let allowance;
+      if (refreshAllowance) {
+        allowance = await ALEPH_ZERO.psp22.allowance(
+          tokenAddress,
+          ALEPH_ZERO.account.address,
+          ALEPH_ZERO.contracts.safeSend.address(),
+        );
+      } else if (
+        cryptocurrency[ALEPH_ZERO.account.address] &&
+        cryptocurrency[ALEPH_ZERO.account.address].allowance
+      ) {
+        allowance = cryptocurrency[ALEPH_ZERO.account.address].allowance;
+      } else {
+        allowance = await ALEPH_ZERO.psp22.allowance(
+          tokenAddress,
+          ALEPH_ZERO.account.address,
+          ALEPH_ZERO.contracts.safeSend.address(),
+        );
+      }
+      let amount = BigNumber(
+        document.formatHumanizedNumberForSmartContract(
+          document.chequesNewForm.amount.value,
+          cryptocurrency.decimals,
+        ),
+      );
+      if (allowance.isGreaterThanOrEqualTo(amount)) {
+        $('form[name="chequesNewForm"] button[type="submit"] .ready').text(
+          "Create",
+        );
+      } else {
+        $('form[name="chequesNewForm"] button[type="submit"] .ready').text(
+          `Enable ${cryptocurrency.symbol}`,
+        );
+      }
+      HELPERS.button.enable(
+        'form[name="chequesNewForm"] button[type="submit"]',
+      );
+    }
+  },
   updateAfterTokenSelect: async (event) => {
     let selector = "#fungible-token-button";
     let address = event.currentTarget.dataset.cryptocurrencyAddress;
@@ -159,6 +243,6 @@ export const CHEQUES_NEW = {
     );
     HELPERS.button.setTokenButton(selector, address);
     ALEPH_ZERO.updateWalletBalance(address);
-    // ALEPH_ZERO.safeSend.setSubmitLabelBasedOnAllowance();
+    CHEQUES_NEW.setSubmitLabelBasedOnAllowance();
   },
 };
