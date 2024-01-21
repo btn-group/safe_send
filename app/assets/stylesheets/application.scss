@@ -9,7 +9,14 @@
 
 // === CUSTOM ===
 @import 'application/footer';
+@import 'application/header';
 @import 'application/polkadot_account_list';
+
+// === FONTS ===
+@font-face {
+  font-family: 'Bitwise';
+  src: url('../../../public/fonts/Bitwise-m19x.ttf');
+}
 
 .required::after {
   color: var(--bs-red);

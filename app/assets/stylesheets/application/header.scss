@@ -1,0 +1,18 @@
+header#page-topbar {
+  background-color: white;
+  border-bottom: 0 !important;
+  position: relative;
+
+  .logo {
+    color: #495057;
+    font-family: 'Bitwise', arial;
+  }
+
+  .topbar-user {
+    background-color: transparent !important;
+  }
+
+  .user-name-text {
+    color: #495057;
+  }
+}
