@@ -111,7 +111,7 @@ export const CHEQUES_NEW = {
           }
           let azeroId = undefined;
           if (document.chequesNewForm.azeroId.value.length) {
-            azeroId = document.chequesNewForm.azeroId.value.length;
+            azeroId = document.chequesNewForm.azeroId.value;
           }
           let memo = document.chequesNewForm.memo.value;
           let api = await ALEPH_ZERO.api();
