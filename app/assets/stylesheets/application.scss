@@ -13,6 +13,12 @@
 @import 'application/polkadot_account_list';
 @import 'cheques/new';
 
+// === FONTS ===
+@font-face {
+  font-family: 'Bitwise';
+  src: url('fonts/Bitwise-m19x.ttf');
+}
+
 @media (min-width: 1024.1px) {
   [data-layout=horizontal] .page-content {
       margin-top: 0px;
