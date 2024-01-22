@@ -1,14 +1,13 @@
 .container.polkadotjs#cheques-new
   .row
-    .col-md-9.mx-auto.mb-5
+    .col-lg-9.col-xl-8.mx-auto.mb-5
       .card
-        .card-header
-          %h1 New cheque
         .card-body
+          %h1.mb-4#cheques-new-form-title Safe Send
           %form.needs-validation{ name: 'chequesNewForm', novalidate: 'novalidate' }
             .mb-3
-              %label.form-label.required{ for: 'cheque-to' } To
-              %input.form-control#cheque-to{ name: 'to', required: 'required', type: 'text' }
+              %label.form-label.required{ for: 'cheque-to' } Pay to the order of
+              %input.form-control#cheque-to{ name: 'to', required: 'required', type: 'text', placeholder: "Enter recipient's wallet address" }
               .invalid-feedback
                 Invalid address.
             .mb-3
@@ -20,23 +19,24 @@
                 %input.form-control{ name: 'amount', autocomplete: 'off', required: true, type: 'number', step: 'any', min: 0 }
                 .position-absolute{ style: 'top: -1px; right: -5px;' }
                   = render 'token_button', additional_button_classes: '', button_id: 'fungible-token-button', data_target: '#fungibleTokens'
-            .mb-3
-              %label.form-label{ for: 'cheque-memo' } Memo
-              %input.form-control#cheque-memo{ name: 'memo', type: 'text' }
-            .d-flex.mt-3
-              %a.btn.btn-light.me-3{ href: '/' } Cancel
-              %button.btn.btn-primary{ type: 'submit' }
-                %span.d-none.loading
-                  %em.spinner-grow.spinner-grow-sm{ 'aria-hidden' => 'true', role: 'status' }
-                  %em.loading-status Loading...
-                %span.ready
-                  Create
-        .card-footer
-          .card-text
-            %small.text-muted
-              %ul
-                %li
-                  Fee:
-                  %span#fee-amount
+            .d-flex
+              .flex-fill
+                %label.form-label{ for: 'cheque-memo' } Memo
+                %input.form-control#cheque-memo{ name: 'memo', type: 'text' }
+              .d-flex.align-items-center.ms-3
+                %a.btn.btn-light.me-3{ href: '/' } Cancel
+                %button.btn.btn-primary{ type: 'submit' }
+                  %span.d-none.loading
+                    %em.spinner-grow.spinner-grow-sm{ 'aria-hidden' => 'true', role: 'status' }
                     %em.loading-status Loading...
+                  %span.ready
+                    Create
+        / .card-footer
+        /   .card-text
+        /     %small.text-muted
+        /       %ul
+        /         %li
+        /           Fee:
+        /           %span#fee-amount
+        /             %em.loading-status Loading...
   = render 'token_list', modal_title_id: 'fungibleTokenLabel', modal_id: 'fungibleTokens', modal_content_id: 'token-list', modal_input_id: 'input-text-1', label_type: 'symbol'
