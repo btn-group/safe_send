@@ -1,0 +1,18 @@
+#cheques-new {
+	.card-body {
+		border: 10px solid #025CB0;
+	}
+
+	#cheques-new-form-title {
+		font-family: 'Bitwise', arial;
+	}
+
+	form[name='chequesNewForm'] {
+		.form-control {
+			border-top: 0 !important;
+			border-left: 0 !important;
+			border-right: 0 !important;
+			border-radius: 0 !important;
+		}
+	}
+}
