@@ -31,12 +31,9 @@
                     %em.loading-status Loading...
                   %span.ready
                     Create
-        / .card-footer
-        /   .card-text
-        /     %small.text-muted
-        /       %ul
-        /         %li
-        /           Fee:
-        /           %span#fee-amount
-        /             %em.loading-status Loading...
+          .card-text.text-end
+            %small.text-muted
+              Fee:
+              %span#fee-amount
+                %em.loading-status Loading...
   = render 'token_list', modal_title_id: 'fungibleTokenLabel', modal_id: 'fungibleTokens', modal_content_id: 'token-list', modal_input_id: 'input-text-1', label_type: 'symbol'
