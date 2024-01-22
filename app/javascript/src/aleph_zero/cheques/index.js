@@ -169,6 +169,7 @@ export const CHEQUES_INDEX = {
     try {
       CHEQUES_INDEX.datatable.clear();
       let response = await ALEPH_ZERO.subsquid.cheques();
+      CHEQUES_INDEX.datatable.clear();
       CHEQUES_INDEX.datatable.rows.add(response);
       CHEQUES_INDEX.datatable.columns.adjust().draw();
     } catch (err) {
