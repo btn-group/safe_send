@@ -67,12 +67,15 @@ export const CHEQUES_INDEX = {
           title: "Status",
           fnCreatedCell: function (nTd, sData, _oData, _iRow) {
             let status = "Cancelled";
+            let badgeClass = "bg-danger";
             if (sData == 0) {
               status = "Pending collection";
+              badgeClass = "bg-black bg-opacity-50";
             } else if (sData == 1) {
               status = "Collected";
+              badgeClass = "bg-success";
             }
-            $(nTd).html(status);
+            $(nTd).html(`<span class="badge ${badgeClass}">${status}</span>`);
           },
         },
         {
@@ -81,11 +84,11 @@ export const CHEQUES_INDEX = {
           fnCreatedCell: function (nTd, _sData, oData, _iRow) {
             if (oData.status == 0) {
               let linkClass = "cancel-cheque-link";
-              let btnClass = "btn-danger";
+              let btnClass = "btn-outline-danger";
               let btnText = "Cancel";
               if (oData.to == ALEPH_ZERO.account.address) {
                 linkClass = "collect-cheque-link";
-                btnClass = "btn-primary";
+                btnClass = "btn-outline-primary";
                 btnText = "Collect";
               }
               let html = `<a href="#" data-cheque-id=${oData.id} class="${linkClass} btn ${btnClass} btn-sm"><span class="d-none loading"><em aria-hidden="true" class="spinner-grow spinner-grow-sm" role="status"></em><em class="loading-status">Loading...</em></span><span class="ready">${btnText}</span></a>`;
