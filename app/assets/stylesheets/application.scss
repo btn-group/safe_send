@@ -19,6 +19,12 @@
   src: url('fonts/Bitwise-m19x.ttf');
 }
 
+@media (max-width: 1024.1px) {
+  [data-layout=horizontal] .page-content {
+      padding: 30px 0.75rem 60px 0.75rem;
+  }
+}
+
 @media (min-width: 1024.1px) {
   [data-layout=horizontal] .page-content {
       margin-top: 0px;
