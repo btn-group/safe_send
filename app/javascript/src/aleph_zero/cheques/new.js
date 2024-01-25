@@ -3,9 +3,14 @@ import { ALEPH_ZERO } from "../helpers";
 import { POLKADOTJS } from "../../polkadotjs";
 
 export const CHEQUES_NEW = {
+  callerAzeroId: undefined,
   fee: undefined,
   init: async () => {
     await CHEQUES_NEW.initTokenListAndButton();
+    CHEQUES_NEW.callerAzeroId =
+      await ALEPH_ZERO.contracts.azeroIdRouter.getPrimaryDomain(
+        ALEPH_ZERO.account.address,
+      );
     // === LIST ===
     HELPERS.initTokenLists(["token-list"]);
     CHEQUES_NEW.setFee();
@@ -61,8 +66,9 @@ export const CHEQUES_NEW = {
     //     to: AccountId,
     //     amount: Balance,
     //     token_address: Option<AccountId>,
-    //     azero_id: Option<String>,
     //     memo: Option<String>,
+    //     recipient_azero_id: Option<String>,
+    //     sender_azero_id: Option<String>,
     document.chequesNewForm.onsubmit = async (e) => {
       e.target.classList.add("was-validated");
       e.stopPropagation();
@@ -125,7 +131,14 @@ export const CHEQUES_NEW = {
             contract,
             "create",
             { value },
-            [to, amount, tokenAddress, azeroId, memo],
+            [
+              to,
+              amount,
+              tokenAddress,
+              memo,
+              azeroId,
+              CHEQUES_NEW.callerAzeroId,
+            ],
           );
           await ALEPH_ZERO.subsquid.waitForSync(response);
           HELPERS.toastr.message = "Success";

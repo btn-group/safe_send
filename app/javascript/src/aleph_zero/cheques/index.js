@@ -31,10 +31,17 @@ export const CHEQUES_INDEX = {
           data: "from",
           title: "Description",
           fnCreatedCell: function (nTd, sData, oData, _iRow) {
-            let description = oData.from;
+            let description = "";
+            let address = oData.from;
+            let azeroId = oData.senderAzeroId;
             if (sData == ALEPH_ZERO.account.address) {
-              description = oData.to;
+              address = oData.to;
+              azeroId = oData.recipientAzeroId;
             }
+            if (azeroId) {
+              description = `<h6 class="mb-1">${azeroId}</h6>`;
+            }
+            description += address;
             if (oData.memo) {
               description += `<br>Memo: ${oData.memo}`;
             }
