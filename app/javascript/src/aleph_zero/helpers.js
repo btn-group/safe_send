@@ -36,7 +36,7 @@ export const ALEPH_ZERO = {
         if (HELPERS.environment == "production") {
           return "";
         } else {
-          return "5EvmKgK2wiPLnoa53KfsPBpzEpn9DZs54u73xPHL1JWQBzm2";
+          return "5EZJQm6g64rhajevm6k4NZmPgyiy95FUAk8Hdz1yaHWo83np";
         }
       },
       getContract: async () => {
@@ -44,7 +44,7 @@ export const ALEPH_ZERO = {
         if (!ALEPH_ZERO.contractsByAddress[address]) {
           let api = await ALEPH_ZERO.api();
           let metadata = await $.ajax({
-            url: "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/j01fl47o6l6dv6xh7z2k7nc7tli7.json?download=1",
+            url: "https://link.storjshare.io/s/juldos5d7qtuwqx2itvdhgtgp3vq/smart-contract-hub-production/kxsd0tc8a7sdq6s102d6d49ksqh5.json?download=1",
           });
           ALEPH_ZERO.contractsByAddress[address] =
             new POLKADOTJS.ContractPromise(api, metadata, address);
@@ -224,6 +224,8 @@ export const ALEPH_ZERO = {
           fee
           tokenAddress
           status
+          recipientAzeroId
+          senderAzeroId
           createdAt
           updatedAt
         }
