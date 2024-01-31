@@ -143,7 +143,7 @@ export const HELPERS = {
         blockchainId = 185;
       }
       HELPERS.cryptocurrencies = await $.ajax({
-        url: `https://btn.group/cryptocurrencies?blockchain_id=${blockchainId}&official=true&include_attachments=true`,
+        url: `https://btn.group/cryptocurrencies?blockchain_id=${blockchainId}&include_attachments=true`,
         type: "get",
         dataType: "json",
       });
