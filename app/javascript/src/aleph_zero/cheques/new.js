@@ -7,10 +7,6 @@ export const CHEQUES_NEW = {
   fee: undefined,
   init: async () => {
     await CHEQUES_NEW.initTokenListAndButton();
-    CHEQUES_NEW.callerAzeroId =
-      await ALEPH_ZERO.contracts.azeroIdRouter.getPrimaryDomain(
-        ALEPH_ZERO.account.address,
-      );
     // === LIST ===
     HELPERS.initTokenLists(["token-list"]);
     CHEQUES_NEW.setFee();
@@ -18,6 +14,10 @@ export const CHEQUES_NEW = {
     $("html").attr("data-preloader", "disable");
     POLKADOTJS.listenForConnectButtonClick(ALEPH_ZERO);
     await ALEPH_ZERO.activatePolkadotJsExtension();
+    CHEQUES_NEW.callerAzeroId =
+      await ALEPH_ZERO.contracts.azeroIdRouter.getPrimaryDomain(
+        ALEPH_ZERO.account.address,
+      );
   },
   activateListeners: () => {
     $(document).on("aleph_zero_account_selected", () => {
